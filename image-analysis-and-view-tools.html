@@ -1,0 +1,81 @@
+<!-- Copyright by Vitali Fedulov (www.similar.pictures) 2019 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Image analysis and view tools</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <script src="js/jquery.min.js"></script>
+</head>
+
+
+
+
+<body>
+
+  <!-- Header  -->
+  <div class="header">
+      <a href = "index.html" class="logo"><h1>Similar<span class="logo-dot">.</span>Pictures</h1></a>
+      <h4 class="logo-statement">Find near duplicates on your computer</h4>
+  </div>
+  
+  <div class="nav">
+      <!-- Set manually class "active" for corresponding nav-tab. -->
+      <div class="nav-tab"><a href="index.html">Home</a></div>
+      <div class="nav-tab"><a href="duplicate-image-search-example.html">Screenshot</a></div>
+      <div class="nav-tab active"><a href="image-analysis-and-view-tools.html">Tools</a></div>
+      <div class="nav-tab"><a href="algorithm-for-perceptual-image-comparison.html">Algorithm</a></div>
+      <div class="nav-tab"><a href="about.html">About</a></div>
+      <div class="line"></div> <!-- Gray line placeholder. Should stay here. -->
+  </div>
+
+
+  <!-- Contents -->
+
+  <h3>Image analysis and view tools</h3>  <!-- Id used for URL anchors.-->
+    
+    <h4>1. Image search</h4>
+
+    <p>This tool allows to search for similar images in a local file directory for one target picture. It is similar to web reverse search, except it is done on your computer instead of the Internet. Web-image types are supported: jpeg, png, bmp, webp, gif.</p>
+    
+    <p>First you select an image you want to search for. Then you select a folder where to search for similar images. The results are presented in a column of pictures ordered by similarity. The results also contain image sizes and file paths to the images. You can extract the paths as a list of strings by clicking "show/hide as list" link.</p>
+    
+    <p>The search has an accelerator mode "Fast scan", which allows the program to use embedded thumbnails whenever available. This option is best used for newer generation unedited JPEG camera or phone images, which typically have properly formed thumbnails. "Fast scan" may miss older JPEG images or find incorrect similarity matches, because sometimes embedded thumbnails do not match the actual image.</p>
+    <div class="center">
+      <a class="button margin-top" href="similar-image-search.html">Similar image search</a>
+    </div>
+
+    <h4>2. Image clustering</h4>
+
+    <p>Also called a duplicate finder, this tool allows to identify groups of similar images on disk. Those groups are called clusters. Web-image types are supported: jpeg, png, bmp, webp, gif.</p>
+    
+    <p>You only need to select a folder where to search for similar images. The results are presented in a column of image clusters. The results also contain image sizes and file paths to the images. You can extract the clusters (groups) of image paths as a list by clicking "show/hide as list" link.</p>
+    
+    <p>The clustering has an accelerator mode "Fast scan", which allows the program to use embedded thumbnails whenever available. This option is best used for newer generation unedited JPEG camera or phone images, which typically have properly formed thumbnails. "Fast scan" may miss older JPEG images or find incorrect similarity matches, because sometimes embedded thumbnails do not match the actual image.</p>
+    <div class="center">
+      <a class="button margin-top" href="duplicate-image-finder.html">Duplicate image finder</a>
+    </div>
+
+    <h4>3. JPEG embedded thumbnails reader</h4>
+
+    <p>This tool allows to view embedded thumbnails, which are a part of some jpeg images. Apart of the full size image jpeg-files often contain a thumbnail for previewing the picture on the camera's LCD screen, in file managers, or in photo manipulation software.</p>
+    
+    <p>You will select a folder to read files. The found thumbnails are presented in a column. The results also contain thumbnail sizes and image paths.</p>
+    
+    <p>Not all jpeg-files contain thumbnails. Also not all, but typically the majority of thumbnails can be extracted with the tool.</p>
+    <div class="center">
+      <a class="button margin-top" href="jpeg-thumbnail-reader.html">Thumbnail reader</a>
+    </div>
+    
+
+
+  <div class = "footer">Copyright &#169; 2018 Vitali Fedulov. All rights reserved.</div>
+  
+</body>
+</html>
+

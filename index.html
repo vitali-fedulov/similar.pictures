@@ -1,0 +1,72 @@
+<!-- Copyright by Vitali Fedulov (www.similar.pictures) 2015-2018 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Similar image search and duplicates search on disk</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <script src="js/jquery.min.js"></script>
+</head>
+
+
+
+
+<body>
+
+  <!-- Header  -->
+  <div class="header">
+      <a href = "index.html" class="logo"><h1>Similar<span class="logo-dot">.</span>Pictures</h1></a>
+      <h4 class="logo-statement">Find near duplicates on your computer</h4>
+  </div>
+  
+  <div class="nav">
+      <!-- Set manually class "active" for corresponding nav-tab. -->
+      <div class="nav-tab active"><a href="index.html">Home</a></div>
+      <div class="nav-tab"><a href="duplicate-image-search-example.html">Screenshot</a></div>
+      <div class="nav-tab"><a href="image-analysis-and-view-tools.html">Tools</a></div>
+      <div class="nav-tab"><a href="algorithm-for-perceptual-image-comparison.html">Algorithm</a></div>
+      <div class="nav-tab"><a href="about.html">About</a></div>
+      <div class="line"></div> <!-- Gray line placeholder. Should stay here. -->
+  </div>
+
+  
+
+  <!-- Contents -->
+  <img src="images/lighthouse.gif" class="lighthouse">
+
+  <p>These tools help find similar photos on disks with Windows, Mac OS and Linux (<a href="duplicate-image-search-example.html">example</a>). You can use Image Search to look for one similar image in a file directory. Alternatively you can use Duplicate Finder to find multiple groups of similar images in a directory (image clustering).</p>
+  <p>Perceptual brightness similarity is used, e.g. images after minor color/spacial changes, resized pictures, and exact copies.</p>
+
+
+  <h3>How to use</h3>
+    <ul>
+      <li>Use desktop Chrome or Firefox (best for speed and folder-selection).</li>
+      <li>Click an appropriate button below and perform image or folder selections.</li>
+      <li>Click "Open" or "Upload" (your images are NOT uploaded, only read-access is given).</li>
+      <li>It might be worth to test on a small folder first to get an idea. Depending on memory, selecting more than 50000 files, e.g. a whole disk, might take too long or even crash your browser. </li>
+      <a class="button margin-right" href="similar-image-search.html">Image search</a>
+      <a class="button" href="duplicate-image-finder.html">Duplicate image finder</a>
+    </ul>
+
+  <h3>Image types supported</h3>
+  <p><samp>JPG, PNG, BMP, WEBP, GIF </samp>(static and animated) of maximum size 20MB per image. Transparency is ignored in image comparison.</p>
+
+  <h3>Algorithm</h3>
+  <p>Read how the <a href="algorithm-for-perceptual-image-comparison.html">image comparison algorithm</a> works and check out <a href="https://github.com/vitali-fedulov/images">image similarity in Go</a> (Github) for your own offline file processing, company or project. The web implementation contains some improvements not described in the linked document above.</p>
+
+  <h3>Precision</h3>
+  <p>Parameters used in the demo web version are set to find reasonably high number of near-similar images with acceptable speed and low false positives. For Clustering one image appears in one cluster only.</p>
+  <p>Images are compared by perceptual similarity in terms of color and brightness across the whole image, without specifically taking in account such transformations as rotations and crops. Partial occlusions, e.g. watermarks, impact perceptual similarity. If the perceptual changes are small, the pictures are considered similar.</p>
+
+
+
+  <div class = "footer">Copyright &#169; 2018 Vitali Fedulov. All rights reserved.</div>
+
+</body>
+</html>
+

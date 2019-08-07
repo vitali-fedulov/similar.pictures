@@ -1,0 +1,399 @@
+/* Part originating from index.css,
+   with removed body and other modifications.
+*/
+
+* {
+	font-family: 'Roboto', serif;
+	color: #333;
+}
+
+p, ul, li, a {
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+div {
+	font-size: 14px;
+}
+
+a {
+	color: #005eda;
+	text-decoration: none;
+	cursor: pointer;
+  }
+a:hover {
+	background-color: rgb(248, 248, 248);
+	color: #004aab;
+}
+
+.header {
+	margin-bottom: 18px;
+}
+
+h1 {
+	color: #3c9eff;
+	cursor: pointer;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 36px;
+    margin-top: 20px;
+    margin-bottom: 6px;
+}
+
+h2{
+	color: #3c9eff;
+	cursor: pointer;
+	font-weight: bold;
+	letter-spacing: 0.1em;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 26px;
+    margin-top: 20px;
+    margin-bottom: 6px;
+}
+
+.logo-dot {
+	font-family: 'Roboto', serif;
+	color: red;
+}
+
+
+.line {
+	flex: auto;
+	border-bottom: 1px solid #ddd;
+}
+
+.lighthouse {
+	float: right;
+	padding: 4px;
+	margin-left:0.4em;
+}
+
+.button {
+    letter-spacing: 0.2em;
+	padding: 5px 14px 5px 14px;
+    border-radius: 5px;
+}
+
+.button-small {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 5px 10px 5px 10px;
+    border-radius: 4px;
+    margin-top: 2px;
+    margin-right: -6px;
+}
+
+.button, .button-small {
+	cursor: pointer;
+	color: white;
+	display: inline-block;
+	background-color: #3c9eff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.button:hover, .button-small:hover {
+	color: white;
+	background-color: #1f85eb;
+}
+
+.button-passive {
+    cursor: default;
+    background-color: #3c9eff38;
+}
+.button-passive:hover {
+	color: white;
+	background-color: #3c9eff38;;
+}
+
+.margin-bottom {
+    margin-bottom: 10px;
+}
+
+.message {
+	text-align: right;
+}
+
+textarea {
+	width: 100%;
+	height: 60px;
+}
+
+.success {
+	color: #039209;
+}
+
+.failure {
+	color: red;
+}
+
+.footer {
+	border-top: 1px solid rgb(0, 0, 0);
+	margin-top: 100px;
+	margin-bottom: 20px;
+	color: gray;
+	font-size: 10px;
+    text-align: right;
+    padding-top: 5px;
+}
+
+
+/* Part specific to clustering and image-search */
+
+html, body {
+	height: 100%;
+	margin: 0px;
+}
+
+/* Initial container for folder/file selector view. */
+.flex-container-select-files {
+	display: flex;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+	max-width: 580px;
+	min-width: 400px;
+	margin-left: auto; /* to center */
+	margin-right: auto; /* to center */
+}
+
+.flex-center-horizontally {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.text-centered {
+	text-align: center;
+}
+
+.clustering-title {
+	cursor: auto;
+}
+
+.terms-of-service-header {
+    margin-top: 10px;
+    color: dimgrey;
+    letter-spacing: 0.25em;
+    margin-bottom: 0px;
+}
+
+#terms-of-service {
+	margin-bottom: 8px;
+}
+
+.fast-option {
+    display: flex;
+    flex-direction: row;
+	margin-top: 14px;
+    font-size: 14px;
+    max-width: 380px;
+}
+
+.fast-option-text {
+    margin-left: 6px;
+    font-size: 12px;
+    color: #888;
+}
+
+#messages {
+    background-color: #fcf8e3;
+    padding: 5px;
+    text-align: center;
+	color: #565656;
+    margin-top: 20px;
+    margin-bottom: 16px;
+    max-width: 420px;
+}
+
+.hidden {
+	display: none;
+}
+
+input {
+	cursor: pointer;
+}
+
+.hello-to-dev {
+	width: 86%;
+	margin-top: 40px;
+}
+
+.link-block {
+    margin-top: 8px;
+    padding-top: 4px;
+}
+
+.home-cancel-link {
+	padding: 8px;
+}
+
+.success-or-error {
+	margin-bottom: 4px;
+}
+
+
+/* Secondary view container for clustered images. */
+.fixed-top {
+    top: 0;
+    position: fixed;
+    width: 100%;
+    min-width: 530px;
+    background-color: white;
+}
+
+.fixed-top-gray {
+    height: 54px;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #dedede;
+}
+
+.logo {
+	color: #3c9eff;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 1.42857143;
+	display: inline-block;
+	margin-left: 17px;
+    margin-top: 7px;
+    margin-bottom: 12px;
+	font-size: 30px;
+	cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+}
+
+.button-new-search {
+	margin: 13px;
+    margin-bottom: 1em;
+    float: right;
+	padding: 8px 12px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+}
+
+.fixed-white-1 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding-left: 15px;
+    padding-top: 16px;
+    width: 100%;
+}
+
+.fixed-white-2 {
+    padding-left: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #dedede;
+    margin-right: 12px;
+}
+
+.progress {
+    width: 175px;
+    height: 8px;
+    margin-top: 6px;
+	margin-right: 14px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+
+#progress-bar {
+    background-color: #3c9eff;
+    width: 40%;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.progress-text {
+    white-space: nowrap;
+    height: 34px;
+}
+
+.view-list {
+    color: #3c9eff;
+    cursor: pointer;
+}
+
+.textarea {
+    display: none;
+    margin-bottom: 14px;
+    font-size: 0.8em;
+    color: black;
+    border-color: black;
+}
+
+.textareaon {
+    display: block;
+    width: 100%;
+    height: 160px;
+}
+
+.explanation {
+	margin-bottom: 0px;
+    margin-top: 2px;
+}
+
+.small {
+	color: gray;
+	font-size: 85%;
+}
+
+.clusters {
+    margin-right: 20px;
+    margin-top: 72px;
+    margin-bottom: 40px;
+    padding-top: 102px;
+}
+
+/* Similar to .clusters */
+.found-images {
+    display: flex;              /* Important for div order programmatically */
+    flex-direction: column;     /* Important for div order programmatically */
+    margin-right: 20px;
+    margin-top: 66px;
+    margin-bottom: 40px;
+    padding-top: 102px;
+    margin-left: 16px;
+}
+
+.cluster {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 22px;
+}
+
+.cluster-num {
+    font-family: 'Roboto', serif;
+    font-size: 1.6em;
+    color: dimgray;
+    padding: 0px 8px 0px 8px;
+    text-align: center;
+}
+
+.cluster-imgs {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.cluster-img-div {
+    background-color: gainsboro;
+    color: black;
+    text-align: center;
+    margin: 0px 3px 3px 0px;
+    padding: 1px;
+}
+
+img {
+    vertical-align: middle;
+}
+
+.img-path {
+    color: dimgray;
+    white-space: nowrap;
+    line-height: 1.42857143;
+}
