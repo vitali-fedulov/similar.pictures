@@ -1,2 +1,2 @@
 # vitali-fedulov.github.io
-https://similar.pictures: Image clustering and image search on disk.
+Live code of https://similar.pictures: a service for image clustering and image search on disk.
