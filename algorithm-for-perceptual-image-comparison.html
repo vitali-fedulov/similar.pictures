@@ -100,11 +100,11 @@
 
     <p><strong>Optimization 3:</strong> Resizing input images to a square mask causes proportion changes for non-square images and allows to preserve information from every region of an image. Such resizing is optional. Instead it is possible to use/resize only the central square area of the input image for comparison, thus discarding information outside the central square. This should not cause considerable loss in comparison precision.</p>
 
-    <p><strong>Optimization 4a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding optimal coefficients between edge information and color information during the hash comparison step.</p>
+    <p><strong>Optimization 4a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding the optimal coefficient for perceptual significance of edge information vs. color information during the comparison.</p>
   
     <p><strong>Optimization 4b:</strong> Instead of summation of colors within mask sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
     
-    <p><strong>Optimization 5:</strong> In the algorithm above white pixels of the masks form small near circular regions. Instead it is possible to use more complex subject-specific region shapes. E.g. face-like masks to detect faces. Mask summation regions can also have gray-scale values instead of being pure white.</p>
+    <p><strong>Optimization 5:</strong> In the algorithm mask sub-regions form small near circular areas. Instead it is possible to use more complex subject-specific shapes. E.g. face-like masks to detect faces. The mask summation regions can also have gray-scale values instead of being pure white.</p>
  
     <h4>Resources</h4>
 
