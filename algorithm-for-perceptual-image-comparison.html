@@ -52,14 +52,14 @@
 
     <h4>1. Mask generation</h4>
 
-    <p>A set of square masks is generated. A mask is a black square image with several white pixels aggregating locally. Such pixel groups are located in distinct positions from mask to mask. The white pixels define image sub-regions to calculate average color at each of the regions. Such color values will be used during comparison stage. Depending on implementation the number of masks is 300-500, and the mask size from 8x8 to 24x24 pixels. A single mask size is used in specific implementation.</p>
+    <p>A set of square masks is generated. A mask is a black square image with several white pixels aggregating locally. Such pixel groups are located in distinct positions from mask to mask. The white pixels define image sub-regions to calculate average color at each of the regions. Such color values will be used during comparison stage. Depending on implementation the number of masks is 300-500, and the mask size ranges from 8x8 to 24x24 pixels.</p>
 
     <figure class="blog-img-1">
       <img src="images/2018-10-29-image-masks-for-hash-generation.png" alt="masks for image comparison">
       <figcaption>Example of 16x16 masks with one of them shown at larger scale</figcaption>
     </figure>
 
-    <p>In the latest implementation, instead of having random shapes, mask sub-regions have regular 3x3 shape (median filter).</p>
+    <p>In the latest implementation, instead of having random shapes, mask sub-regions have regular 3x3 shape.</p>
 
     <h4>2. Image resizing</h4>
     
