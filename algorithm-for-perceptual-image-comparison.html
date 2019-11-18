@@ -1,4 +1,4 @@
-<!-- Copyright by Vitali Fedulov (www.similar.pictures) 2015-2018 -->
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2018 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +43,7 @@
 
   <!-- Contents -->
 
-  <p class="published"><time datetime="2018-10-29">2018-10-29</time></p>
+  <p class="published"><time datetime="2019-11-18">18 Nov. 2019 (updated)</time></p>
   <h3 id="2018-10-29">Algorithm for perceptual image comparison</h3>  <!-- Id used for URL anchors.-->
     
     <p>The image comparison algorithm I developed for the service makes use of perceptual similarity by performing the following set of operations:</p>
@@ -72,7 +72,7 @@
 
     <h4>3. Generating image hashes</h4>
 
-    <p>An image hash is an array of average color values defined by white pixels of separate masks superimposed over the resized image. Example hash: [23, 126, 77, ...], where the array length is equal to the number of masks. Each value in the array corresponds to an average color value corresponding to the location of white pixels in one mask. Black pixels of a mask are not used for calculations. Best results are achieved by mixing color channel values, so that each value corresponds to a different color channel or gray in the following order within a hash: [r, g, k, r, g, k, ...], where r is red, g is green, k is grayscale. Blue is not used as a separate value because it was found less relevant for perceptual similarity.</p>
+    <p>An image hash is an array of average color values defined by white pixels of separate masks superimposed over the resized image. Example hash: [23, 126, 77, ...], where the array length is equal to the number of masks. Each value in the array corresponds to an average color value corresponding to the location of white pixels in one mask. Black pixels of a mask are not used for calculations. Best results are achieved by mixing color channel values, so that each value corresponds to a different color channel in the following order within the hash: [red, green, blue, red, green, blue, ...].</p>
 
 
     <figure class="blog-img-1">
@@ -81,30 +81,32 @@
     </figure>
 
 
-    <h4>4. Image to image comparison</h4>
+    <h4>4. Image size and hash comparison</h4>
 
     <p>An input to this operation is a pair of image hashes and original image sizes. Image sizes are used as a first step to quickly eliminate possible mismatch. If image proportions are considerably different, images are considered non-similar, so no further checks are performed.</p>
     
-    <p>In the next step two image hashes are compared in a loop value-by-value (e.g. color by color). If a color difference for two images is larger than a threshold (~50), images are considered non-similar and the loop is broken. This allows to eliminate non-similar pictures before going to the more computationally intensive next step.</p>
+    <p>In the next step two image hashes are compared by Euclidean distance. If the distance is larger than a certain threshold, images are considered non-similar. This comparison is done for both original and min-max-normalized hashes.</p>
 
-    <p>In the last step two image hashes are compared by their cosine similarity. If the similarity is smaller than threshold (~0.97), the images are considered different. This is the final step of the comparison procedure.</p>
+    <p>In the last step the hashes are cross-checked by brightness change sign, because similar pictures have closely correlated brightness changes between their sub-regions. This is the final step of the comparison procedure.</p>
 
     <p>Image pairs that passed all the three filters above are similar (with high probability).</p>
     
     <h4>Possible optimizations</h4>
 
-    <p><strong>Optimization 1:</strong> The algorithm benefits from histogram normalization applied to resized images. This allows to better compare similar images containing line drawings, where white background occupies the majority of space. Normalization approach will sometimes generate false positives, e.g. underexposed images normalized and found similar to well balanced images.</p>
+    <p><strong>Optimization 1:</strong> To increase precision of the algorithm, one may apply it on image sub-regions (instead of the whole image). When majority of sub-regions are found to be similar, the images are likely to be similar.</p>
 
-    <p><strong>Optimization 2:</strong> If searching for very similar images, e.g. strictly resized images, one can decrease color threshold and increase cosine similarity; alternatively increase mask size. In general, assuming same size of white sub-regions of the masks, smaller masks allow better generalization, e.g. comparing overall color/brightness distribution over the images. But such approach will also generate more false positives.</p>
+    <p><strong>Optimization 2:</strong> Surprisingly robust results were achieved when using exclusively the brightness correlation filter (as in part 4 above) performed on each-to-each sub-region. In fact, an additional similarity-dimension can be added to identify image pairs of large brightness/exposure differences. For example two photos of same subject: one underexposed, another normally exposed. Unfortunately such method is very slow compared to the Euclidean distance test. To accelerate the main algorithm such comparison is only done for adjacent hash values.</p>
 
-    <p><strong>Optimization 3:</strong> Resizing input images to a square mask causes proportion changes for non-square images and allows to preserve information from every region of an image. Such resizing is optional. Instead it is possible to use/resize only the central square area of the input image for comparison, thus discarding information outside the central square. This should not cause considerable loss in comparison precision.</p>
+    <p><strong>Optimization 3:</strong> If searching for very similar images, e.g. strictly resized images, one can modify threshold coefficients; alternatively increase mask size. In general, assuming same size of white sub-regions of the masks, smaller masks allow better generalization, e.g. comparing overall color/brightness distribution over the images. But such approach will also generate more false positives.</p>
 
-    <p><strong>Optimization 4a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding the optimal coefficient for perceptual significance of edge information vs. color information during the comparison.</p>
+    <p><strong>Optimization 4:</strong> Resizing input images to a square mask causes proportion changes for non-square images and allows to preserve information from every region of an image. Such resizing is optional. Instead it is possible to use/resize only the central square area of the input image for comparison, thus discarding information outside the central square. This should not cause considerable loss in comparison precision.</p>
+
+    <p><strong>Optimization 5a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding the optimal coefficient for perceptual significance of edge information vs. color information during the comparison.</p>
   
-    <p><strong>Optimization 4b:</strong> Instead of summation of colors within mask sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
+    <p><strong>Optimization 5b:</strong> Instead of summation of colors within mask sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
     
-    <p><strong>Optimization 5:</strong> In the algorithm mask sub-regions form small near circular areas. Instead it is possible to use more complex subject-specific shapes. E.g. face-like masks to detect faces. The mask summation regions can also have gray-scale values instead of being pure white.</p>
- 
+    <p><strong>Optimization 6:</strong> In the algorithm mask sub-regions form small near circular areas. Instead it is possible to use more complex subject-specific shapes. E.g. face-like masks to detect faces. The mask summation regions can also have gray-scale values instead of being pure white.</p>
+
     <h4>Resources</h4>
 
     <p>Algorithm in Github (Golang): <a href="https://github.com/vitali-fedulov/images">image comparison</a>.</p>
@@ -114,7 +116,7 @@
     
 
 
-  <div class = "footer">Copyright &#169; 2018 Vitali Fedulov. All rights reserved.</div>
+  <div class = "footer">Copyright &#169; 2015-2019 Vitali Fedulov. All rights reserved.</div>
   
 </body>
 </html>
