@@ -1,4 +1,4 @@
-<!-- Copyright by Vitali Fedulov (www.similar.pictures) 2015-2019 -->
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2019 -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -26,11 +26,11 @@
                         <div class="button">OK</div>
                     </div>
                     <div id="file-selector" class="text-centered">
-                        <input class="hidden" type="file" id="filesSelected" webkitdirectory multiple accept="image/*" onchange="v32(this.files)" onclick="v9()">
+                        <input class="hidden" type="file" id="filesSelected" webkitdirectory multiple accept="image/*" onchange="v31(this.files)" onclick="v9()">
                         <a class="button">Select a folder with images</a>
                     </div>
                     <div class="link-block text-centered">
-                        <a class="home-cancel-link" id="cancel-link" onclick="v31()">Cancel</a>
+                        <a class="home-cancel-link" id="cancel-link" onclick="v30()">Cancel</a>
                         <a class="home-cancel-link" href="/">Home</a>
                     </div>
                 </div>
@@ -68,31 +68,31 @@
                 $("#terms").load("tos_en.html");
                 $("#ok-button").hide();
                 $("#cancel-link").hide();
-                $(".button-new-search").click(v34);
-                $("#ok-button").click(v34);
+                $(".button-new-search").click(v40);
+                $("#ok-button").click(v40);
             });
 
-            var v46 = {
+            var v44 = {
 
-                v28: 80000,
-                v7: 50 * 1024 * 1024,
-                v41: 0,
-                v35: 0,
+                v29: 80000,
+                v5: 50 * 1024 * 1024,
+                v43: 0,
+                v39: 0,
                 v13: Date.now(),
 
-                v30: 0,
+                v32: 0,
 
-                v26: [],
-                v44: "image/jpeg",
-                v48: "",
-                v24: (function() {
-                    var v11 = new Uint32Array(10);
-                    window.crypto.getRandomValues(v11);
-                    var v23 = "";
-                    for (var i = 0; i < v11.length; i++) {
-                        v23 += v11[i].toString(36);
+                v27: [],
+                v48: "image/jpeg",
+                v45: "",
+                v23: (function() {
+                    var v12 = new Uint32Array(10);
+                    window.crypto.getRandomValues(v12);
+                    var v25 = "";
+                    for (var i = 0; i < v12.length; i++) {
+                        v25 += v12[i].toString(36);
                     }
-                    return v23
+                    return v25
                 }
                 )(),
 
@@ -102,28 +102,28 @@
                 v1: 1000,
                 v0: null,
                 v22: '\n',
-                v12: 0,
-                v8: false,
-                v6: 0,
+                v11: 0,
+                v10: false,
+                v7: 0,
             };
 
             function v4() {
-                return Math.floor((Date.now() - v46.v13) / 1000);
+                return Math.floor((Date.now() - v44.v13) / 1000);
             }
 
-            function v31() {
-                v34();
+            function v30() {
+                v40();
             }
 
-            function v34() {
+            function v40() {
                 location.reload();
                 $(document).ready(function() {
                     $(this).scrollTop(0);
                 });
             }
 
-            var v25 = document.getElementById('file-selector');
-            v25.addEventListener('click', v19);
+            var v26 = document.getElementById('file-selector');
+            v26.addEventListener('click', v19);
 
             function v19() {
                 var v61 = document.getElementById('filesSelected');
@@ -134,114 +134,28 @@
                 v61.click();
             }
 
-            function v32(v58) {
-                v46.v6 = 0;
-                clearTimeout(v46.v0);
-                $("#file-selector").hide();
-                v46.v58 = v58;
-                v46.v48 = v58[0].webkitRelativePath.split("/")[0];
-                v46.v38 = v58.length;
-                var v54 = 0;
-                var v59 = 0;
-                $(".flex-container-select-files").hide();
-                $(".fixed-top").show();
-                $(".view-list").click(v39);
-                $(".fixed-white-2").show();
-                v2();
-                v20(v54, v59);
-            }
-            function v20(v54, v59) {
-
-                if (v54 >= v46.v38) {
-                    v16(v54);
-                    return;
-                }
-
-                if (v54 < 5 || v54 % 5 === 0) {
-                    v3(v54);
-                }
-
-                if (!v46.v44 == v46.v58[v54].type || v46.v58[v54].size > v46.v7) {
-                    v54++;
-                    v20(v54, v59);
-                    return;
-                }
-
-                v46.v41 = v59 + 1;
-                v27(v59, v54, function(v66) {
-
-                    if (v66 == null) {
-                        v54++;
-                        v59++;
-                        v20(v54, v59);
-                        return;
-
-                    } else {
-
-                        var v68 = new Image();
-
-                        v68.onload = function() {
-
-                            v46.v12++;
-
-                            v46.v26[v59] = v54;
-                            v46.v35 = v54 + 1;
-
-                            v46.v30++;
-                            v5(v46.v30);
-                            v14(v46.v30 - 1, v59, v68);
-
-                            v54++;
-                            v59++;
-                            if (!v46.v8) {
-                                v46.v8 = true;
-                            }
-
-                            URL.revokeObjectURL(v68.src);
-                            v2();
-                            v20(v54, v59);
-                            return;
-                        }
-                        ;
-
-                        v68.onerror = function() {
-                            URL.revokeObjectURL(v68.src);
-                            v54++;
-                            v59++;
-                            v20(v54, v59);
-                            return;
-                        }
-                        ;
-
-                        v68.src = URL.createObjectURL(v66);
-
-                        return;
-                    }
-                });
-            }
-
-            function v27(v59, v54, v47) {
-                var v55 = new FileReader();
-                v55.readAsArrayBuffer(v46.v58[v54].slice(0, v46.v28));
-                v55.onload = function(v57) {
-                    var v60 = new Uint8Array(v57.target.result), v62, v69;
-                    for (var v70 = 2; v70 < v60.length; v70++) {
-                        if (v60[v70] == 0xFF) {
-                            if (!v62) {
-                                if (v60[v70 + 1] == 0xD8) {
-                                    v62 = v70;
+            function v24(v57, v56, v47) {
+                var v54 = new FileReader();
+                v54.readAsArrayBuffer(v44.v58[v56].slice(0, v44.v29));
+                v54.onload = function(v60) {
+                    var v62 = new Uint8Array(v60.target.result), v59, v69;
+                    for (var v71 = 2; v71 < v62.length; v71++) {
+                        if (v62[v71] == 0xFF) {
+                            if (!v59) {
+                                if (v62[v71 + 1] == 0xD8) {
+                                    v59 = v71;
                                 }
                             } else {
-                                if (v60[v70 + 1] == 0xD9) {
-                                    v69 = v70 + 2;
+                                if (v62[v71 + 1] == 0xD9) {
+                                    v69 = v71 + 2;
                                     break;
                                 }
                             }
                         }
                     }
-                    if (v62 && v69) {
-                        v47(new Blob([v60.subarray(v62, v69)],{
-                            type: v46.v44
+                    if (v59 && v69) {
+                        v47(new Blob([v62.subarray(v59, v69)],{
+                            type: v44.v48
                         }));
                     } else {
                         v47(null);
@@ -249,14 +163,14 @@
                 }
                 ;
 
-                v55.onerror = function() {
+                v54.onerror = function() {
                     v47(null);
                 }
                 ;
             }
 
-            function v16(v54) {
-                if (v46.v12 == 0) {
+            function v17(v56) {
+                if (v44.v11 == 0) {
                     $(".fixed-top").hide();
                     $(".flex-container-select-files").show();
                     $("#messages").text("No images with embedded thumbnails found. Please select a different folder.");
@@ -267,82 +181,82 @@
                     return;
                 }
                 $(".progress")[0].remove();
-                var v71 = "s";
-                if (v54 + 1 == 1) {
-                    v71 = "";
+                var v70 = "s";
+                if (v56 + 1 == 1) {
+                    v70 = "";
                 }
-                v10(".progress-text", "Successfully scanned ".concat(v46.v58.length, " file", v71, "."));
-                if (v46.v30 == 0) {
-                    v10(".progress-text", "Zero thumbnails found from the successfully scanned ".concat(v46.v58.length, " file", v71, "."));
+                v8(".progress-text", "Successfully scanned ".concat(v44.v58.length, " file", v70, "."));
+                if (v44.v32 == 0) {
+                    v8(".progress-text", "Zero thumbnails found from the successfully scanned ".concat(v44.v58.length, " file", v70, "."));
                 }
                 return;
             }
 
-            function v10(v15, v64) {
-                $(v15)[0].textContent = v64;
+            function v8(v15, v67) {
+                $(v15)[0].textContent = v67;
             }
 
-            function v2() {
-                var v71 = "s";
-                if (v46.v30 == 1) {
-                    v71 = "";
+            function v3() {
+                var v70 = "s";
+                if (v44.v32 == 1) {
+                    v70 = "";
                 }
-                v10(".found-clusters", "Found ".concat(v46.v30, ' embedded thumbnail', v71));
+                v8(".found-clusters", "Found ".concat(v44.v32, ' embedded thumbnail', v70));
             }
 
-            function v3(v54) {
-                if (v54 + 1 == v46.v38) {
+            function v2(v56) {
+                if (v56 + 1 == v44.v38) {
                     return;
                 }
-                v10(".progress-text", "Please wait... Reading ".concat(v54, ' from ', v46.v38, ' selected files.'));
-                var v50 = Math.floor(100 * (v54 + 1) / v46.v38);
-                if (v50 < 5) {
-                    v50 = 5;
+                v8(".progress-text", "Please wait... Reading ".concat(v56, ' from ', v44.v38, ' selected files.'));
+                var v49 = Math.floor(100 * (v56 + 1) / v44.v38);
+                if (v49 < 5) {
+                    v49 = 5;
                 }
-                var v45 = "".concat(v50, "%");
-                $("#progress-bar").width(v45);
+                var v46 = "".concat(v49, "%");
+                $("#progress-bar").width(v46);
             }
-            function v53(v29, v21) {
-                var v63 = document.createElement("div");
-                v63.className = v29;
-                v21.appendChild(v63);
-                return v63;
-            }
-
-            var v33 = document.getElementById("clusters");
-
-            function v5(v42) {
-                var v36 = v53("cluster", v33);
-                var v43 = v53("cluster-num", v36);
-                v43.textContent = v42;
-                var v18 = v53("cluster-content", v36);
-                v53("cluster-imgs", v18);
-                v53("cluster-paths", v18);
+            function v51(v33, v21) {
+                var v66 = document.createElement("div");
+                v66.className = v33;
+                v21.appendChild(v66);
+                return v66;
             }
 
-            function v14(v42, v59, v68) {
-                var v49 = $(".cluster-imgs")[v42];
-                var v56 = v53("cluster-img-div", v49);
+            var v28 = document.getElementById("clusters");
+
+            function v6(v41) {
+                var v36 = v51("cluster", v28);
+                var v42 = v51("cluster-num", v36);
+                v42.textContent = v41;
+                var v18 = v51("cluster-content", v36);
+                v51("cluster-imgs", v18);
+                v51("cluster-paths", v18);
+            }
+
+            function v14(v41, v57, v68) {
+                var v50 = $(".cluster-imgs")[v41];
+                var v55 = v51("cluster-img-div", v50);
                 v68.classList.add("cluster-img");
-                v56.appendChild(v68);
-                var v37 = v53("image-size", v56);
+                v55.appendChild(v68);
+                var v37 = v51("image-size", v55);
                 v37.textContent = "".concat(v68.width, "×", v68.height);
-                var v17 = $(".cluster-paths")[v42];
-                var v40 = v53("img-path", v17);
-                var v65 = v46.v58[v46.v26[v59]];
-                v40.textContent = v65.webkitRelativePath;
-                v46.v6++;
+                var v16 = $(".cluster-paths")[v41];
+                var v34 = v51("img-path", v16);
+                var v65 = v44.v58[v44.v27[v57]];
+                v34.textContent = v65.webkitRelativePath;
+                v44.v7++;
             }
 
-            function v39() {
-                var v67 = "";
-                var v52 = $(".img-path");
-                for (v72 = 0; v72 < v52.length; v72++) {
-                    var v51 = v52[v72].textContent;
-                    v67 = v67.concat(v51, v46.v22);
+            function v35() {
+                var v64 = "";
+                var v53 = $(".img-path");
+                for (v72 = 0; v72 < v53.length; v72++) {
+                    var v52 = v53[v72].textContent;
+                    v64 = v64.concat(v52, v44.v22);
                 }
-                v67 = v67.slice(0, -1);
-                $(".textarea").val(v67);
+                v64 = v64.slice(0, -1);
+                $(".textarea").val(v64);
                 $(".textarea").toggleClass("textareaon");
             }
 
@@ -350,14 +264,102 @@
                 $("#terms-of-service").hide();
                 $(".text-left").hide();
                 $(".vertical-center-row").toggleClass("vertical-center-narrow");
-                v46.v0 = setTimeout(function() {
+                v44.v0 = setTimeout(function() {
                     $("#messages").text('Please wait if you selected a very large number of images: it may take tens of seconds before the reading starts.');
                     $("#messages").show();
                     $("#file-selector").hide();
                     $("#fast").hide();
                     $("#cancel-link").show();
-                }, v46.v1);
+                }, v44.v1);
+            }
+
+            function v31(v58) {
+                v44.v7 = 0;
+                clearTimeout(v44.v0);
+                $("#file-selector").hide();
+                v44.v58 = v58;
+                v44.v45 = v58[0].webkitRelativePath.split("/")[0];
+                v44.v38 = v58.length;
+                var v56 = 0;
+                var v57 = 0;
+                $(".flex-container-select-files").hide();
+                $(".fixed-top").show();
+                $(".view-list").click(v35);
+                $(".fixed-white-2").show();
+                v3();
+                v20(v56, v57);
+            }
+            function v20(v56, v57) {
+
+                if (v56 >= v44.v38) {
+                    v17(v56);
+                    return;
+                }
+
+                if (v56 < 5 || v56 % 5 === 0) {
+                    v2(v56);
+                }
+
+                if (!v44.v48 == v44.v58[v56].type || v44.v58[v56].size > v44.v5) {
+                    v56++;
+                    v20(v56, v57);
+                    return;
+                }
+
+                v44.v43 = v57 + 1;
+
+                v24(v57, v56, function(v63) {
+
+                    if (v63 == null) {
+                        v56++;
+                        v57++;
+                        v20(v56, v57);
+                        return;
+
+                    } else {
+
+                        var v68 = new Image();
+
+                        v68.onload = function() {
+
+                            v44.v11++;
+
+                            v44.v27[v57] = v56;
+                            v44.v39 = v56 + 1;
+
+                            v44.v32++;
+                            v6(v44.v32);
+                            v14(v44.v32 - 1, v57, v68);
+
+                            v56++;
+                            v57++;
+                            if (!v44.v10) {
+                                v44.v10 = true;
+                            }
+
+                            URL.revokeObjectURL(v68.src);
+                            v3();
+                            v20(v56, v57);
+                            return;
+                        }
+                        ;
+
+                        v68.onerror = function() {
+                            URL.revokeObjectURL(v68.src);
+                            v56++;
+                            v57++;
+                            v20(v56, v57);
+                            return;
+                        }
+                        ;
+
+                        v68.src = URL.createObjectURL(v63);
+
+                        return;
+                    }
+                });
             }
         </script>
     </body>
 </html>
+
