@@ -1,4 +1,4 @@
-<!-- Copyright by Vitali Fedulov (www.similar.pictures) 2015-2018 -->
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2019 -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -42,16 +42,15 @@
      on disks with Windows, Mac OS and Linux (<a href="duplicate-image-search-example.html">example</a>).
     Alternatively you can use Duplicate Finder to find multiple groups of similar images in a directory
     (image clustering).</p>
-  <p>Perceptual brightness similarity is used, e.g. images after minor color/spacial changes,
-    resized pictures, and exact copies.</p>
+  <p>This reverse image search allows to find resized pictures, photos after small color/spacial changes, and exact copies. Perceptual similarity is identified by comparison of brightness of image sub-regions.</p>
 
 
   <h3>How to use</h3>
     <ul>
       <li>Use desktop Chrome or Firefox (best for speed and folder-selection).</li>
-      <li>Click an appropriate button below and perform image or folder selections.</li>
+      <li>Click a button below and select an image or directory.</li>
       <li>Click "Open" or "Upload" (your images are NOT uploaded, only read-access is given).</li>
-      <li>To get an idea of what is considered "similar", try "Duplicate image finder" first. Do not select a folder with too many files (>10000-50000), as it would take very long initial selection time and more memory to process.</li>
+      <li>To get an idea of what is considered "similar", try "Duplicate image finder" first. Do not select a folder with too many files (>10000-50000), as it will take very long initial selection time and more memory to process.</li>
       <a class="button margin-right" href="similar-image-search.html">Image search</a>
       <a class="button" href="duplicate-image-finder.html">Duplicate image finder</a>
     </ul>
@@ -59,16 +58,15 @@
   <h3>Image types supported</h3>
   <p><samp>JPG, PNG, BMP, WEBP, GIF </samp>(static and animated) of maximum size 20MB per image. Transparency is ignored in image comparison.</p>
 
-  <h3>Algorithm</h3>
-  <p>Read how the <a href="algorithm-for-perceptual-image-comparison.html">image comparison algorithm</a> works and check out <a href="https://github.com/vitali-fedulov/images">image similarity in Go</a> (Github) for your own offline file processing, company or project. The web implementation contains some improvements not described in the linked document above.</p>
+  <h3>Open-source algorithm</h3>
+  <p>Read about this <a href="algorithm-for-perceptual-image-comparison.html">photo comparison algorithm</a> and check out <a href="https://github.com/vitali-fedulov/images">image similarity in Go</a> (Github) for your company or project. The open-source Golang code implements the image comparison function, but does not include the duplicate finder tool (clustering algorithm).</p>
 
   <h3>Precision</h3>
-  <p>Parameters used in the demo web version are set to find reasonably high number of near-similar images with acceptable speed and low false positives. For Clustering one image appears in one cluster only.</p>
-  <p>Images are compared by perceptual similarity in terms of color and brightness across the whole image, without specifically taking in account such transformations as rotations and crops. Partial occlusions, e.g. watermarks, impact perceptual similarity. If the perceptual changes are small, the pictures are considered similar.</p>
+  <p>Parameters are set to find reasonably high number of near-similar images with acceptable speed and low false positives. The idea is to offer ready-to-use solution for majority of typical cases without many customizable parameters.</p>
+  <p>Images are compared by perceptual similarity in terms of color and brightness across the whole image, without taking in account rotations and crops. Partial occlusions, e.g. watermarks, impact perceptual similarity. If the perceptual changes are small, the pictures are considered similar. Rotated and mirrored images are considered distinct.</p>
 
 
-
-  <div class = "footer">Copyright &#169; 2018 Vitali Fedulov. All rights reserved.</div>
+  <div class = "footer">Copyright &#169; 2019 Vitali Fedulov. All rights reserved.</div>
 
 </body>
 </html>
