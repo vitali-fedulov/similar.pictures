@@ -1,4 +1,4 @@
-<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2019 -->
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2020 -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -26,21 +26,26 @@
                         <div class="button">OK</div>
                     </div>
                     <div id="image-selector" class="text-centered margin-bottom">
-                        <input type="file" accept="image/*" class="hidden" id="imageSelected" onchange="v7(this.files)">
+                        <input type="file" accept="image/*" class="hidden" id="imageSelected" onchange="v4(this.files)">
                         <a class="button" id="button-image-select">1. Select image to search
  </a>
                     </div>
                     <div id="folder-selector" class="text-centered">
-                        <input type="file" accept="image/*" webkitdirectory multiple class="hidden" id="filesSelected" onchange="v50(this.files)" onclick="v15()">
+                        <input type="file" accept="image/*" webkitdirectory multiple class="hidden" id="filesSelected" onchange="v52(this.files)" onclick="v16()">
                         <a class="button button-passive" id="button-folder-select">2. Where to search (select folder)
  </a>
                     </div>
-                    <div id="fast" class="fast-option">
+                    <div class="fast-option">
                         <input type="checkbox" id="fast-option" onclick="v6()">
-                        <div class="fast-option-text">Check here to accelerate the search. In rare cases this option may skip some images.</div>
+                        <div class="option-text">Option to accelerate the search with larger chance to mismatch pictures. The acceleration is noticeable for folders with many JPEG images.
+ </div>
+                    </div>
+                    <div class="exposure-option">
+                        <input type="checkbox" id="exposure-option" onclick="v6()">
+                        <div class="option-text">Option to include images with large exposure differences. This may find more matches, but will take longer.</div>
                     </div>
                     <div class="link-block text-centered">
-                        <a class="home-cancel-link" id="cancel-link" onclick="v53()">Cancel</a>
+                        <a class="home-cancel-link" id="cancel-link" onclick="v45()">Cancel</a>
                         <a class="home-cancel-link" href="/">Home</a>
                     </div>
                 </div>
@@ -68,188 +73,184 @@
                 <span>)</span>
                 <textarea class="textarea"></textarea>
                 <p class="explanation">
-                    <small class="small">The most similar images appear on top. Keep the browser tab open to avoid stopping the search.</small>
+                    <small class="small">The most similar images will move up during the search. Keep the browser tab open to avoid stopping the search.</small>
                 </p>
             </div>
         </div>
         <div id="clusters" class="found-images"></div>
         <script>
+
             $(document).ready(function() {
+                v7();
                 $("#terms").load("tos_en.html");
-                v4();
                 $("#ok-button").hide();
                 $("#cancel-link").hide();
-                $(".button-new-search").click(v63);
-                $("#ok-button").click(v63);
-            });
-
-            var v77 = {
-
-                v90: 24,
-                v46: 12,
-                v51: 80000,
-                v11: 20 * 1024 * 1024,
-                v68: 0,
-                v61: 0,
-                v20: Date.now(),
-
-                v71: false,
-
-                v92: 0,
-                v99: [],
-
-                v105: [],
-                v148: 0,
-                v147: 0,
-                v47: [],
-                v93: [],
-                v145: 0,
-                v149: 0,
-
-                v48: 0,
-                v39: [],
-
-                v33: [],
-                v38: 50,
-                v66: 0.2,
-                v69: 0.7,
-                v134: 10,
-                v113: 100,
-                v45: [],
-                v30: /(^image\/gif$)|(^image\/jpeg$)|(^image\/jpg$)|(^image\/bmp$)|(^image\/png$)|(^image\/webp$)/,
-                v73: "",
-                v42: (function() {
-                    var v21 = new Uint32Array(10);
-                    window.crypto.getRandomValues(v21);
-                    var v43 = "";
-                    var v161 = 0;
-                    for (v161 = 0; v161 < v21.length; v161++) {
-                        v43 += v21[v161].toString(36);
-                    }
-                    return v43
-                }
-                )(),
-
-                v94: null,
-                v57: 0,
-
-                v27: false,
-
-                v1: 1000,
-                v0: null,
-                v17: "image/jpeg",
-                v10: 0.6,
-                v44: 160,
-                v34: '\n',
-                v18: 0,
-                v16: false,
-                v9: 0,
-            };
-
-            var v72 = {
-                v37: v77.v46 * v77.v46,
-                v114: v77.v90 * v77.v46,
-                v78: v77.v90 * v77.v90,
-            };
-
-            function v5() {
-                return Math.floor((Date.now() - v77.v20) / 1000);
-            }
-
-            function v6() {
-                localStorage.setItem("fast-option", $("#fast-option")[0].checked);
-                return;
-            }
-
-            function v4() {
-                if (localStorage.getItem("fast-option") == "true") {
-                    $("#fast-option")[0].checked = true;
-                }
-                return;
-            }
-
-            function v53() {
-                v63();
-            }
-
-            function v63() {
-                location.reload();
+                $(".button-new-search").click(v59);
+                $("#ok-button").click(v59);
                 $(document).ready(function() {
                     $(this).scrollTop(0);
                 });
+            });
+
+            var v74 = {
+
+                v85: 24,
+                v39: 12,
+                v47: 80000,
+                v10: 40 * 1024 * 1024,
+                v64: 0,
+                v62: 0,
+                v12: false,
+                v11: false,
+
+                v87: 0,
+                v100: [],
+
+                v90: [],
+                v136: 0,
+                v141: 0,
+                v38: [],
+                v96: [],
+                v145: 0,
+                v147: 0,
+
+                v44: 0,
+                v34: [],
+                v122: 10,
+                v112: 100,
+                v37: 50,
+                v66: 0.2,
+                v69: 0.7,
+                v49: 0.8,
+                v48: 0.95,
+                v29: /(^image\/gif$)|(^image\/jpeg$)|(^image\/jpg$)|(^image\/bmp$)|(^image\/png$)|(^image\/webp$)/,
+                v71: "",
+
+                v92: null,
+                v54: 0,
+
+                v30: false,
+
+                v1: 1000,
+                v0: null,
+                v14: "image/jpeg",
+                v9: 0.6,
+                v40: 160,
+                v31: '\n',
+                v19: 0,
+                v15: false,
+                v8: 0,
+            };
+
+            var v72 = {
+                v32: v74.v39 * v74.v39,
+                v106: v74.v85 * v74.v39,
+            };
+
+            function v6() {
+                localStorage.setItem("fast-option-sis", $("#fast-option")[0].checked);
+                localStorage.setItem("exposure-option-sis", $("#exposure-option")[0].checked);
+                return;
             }
 
-            document.getElementById('image-selector').addEventListener('click', v23);
+            function v7() {
+                if (localStorage.getItem("fast-option-sis") == null) {
+                    $("#fast-option")[0].checked = true;
+                    $("#exposure-option")[0].checked = true;
+                    return;
+                }
+                if (localStorage.getItem("fast-option-sis") == 'false') {
+                    $("#fast-option")[0].checked = false;
+                } else {
+                    $("#fast-option")[0].checked = true;
+                }
+                if (localStorage.getItem("exposure-option-sis") == 'false') {
+                    $("#exposure-option")[0].checked = false;
+                } else {
+                    $("#exposure-option")[0].checked = true;
+                }
+                return;
+            }
 
-            function v23() {
+            function v45() {
+                v59();
+            }
+
+            function v59() {
+                location.reload();
+            }
+
+            document.getElementById('image-selector').addEventListener('click', v24);
+
+            function v24() {
                 document.getElementById('imageSelected').click();
             }
 
-            function v12() {
-                document.getElementById('image-selector').removeEventListener('click', v23);
-                document.getElementById('folder-selector').addEventListener('click', v19);
+            function v17() {
+                document.getElementById('image-selector').removeEventListener('click', v24);
+                document.getElementById('folder-selector').addEventListener('click', v20);
                 $("#button-image-select").addClass("button-passive");
                 $("#button-folder-select").removeClass("button-passive");
                 $("#cancel-link").show();
             }
 
-            function v19() {
-                var v100 = document.getElementById('filesSelected');
-                if (!!v100.webkitdirectory == false) {
-                    alert('This browser does not support folder selection. Please try latest Chrome, Firefox or Edge.');
+            function v20() {
+                var v102 = document.getElementById('filesSelected');
+                if (!!v102.webkitdirectory == false) {
+                    alert('This browser does not support folder selection. Please try latest desktop Chrome, Firefox or Edge.');
                     return;
                 }
-                v100.click();
+                v102.click();
             }
 
-            function v31() {
+            function v27() {
                 $("#messages").text('ERROR. The selected image cannot be read. Please select another image (or the same image in a different format).');
                 $("#messages").show();
                 $("#cancel-link").show();
             }
 
-            function v8() {
+            function v5() {
                 $("#terms-of-service").show();
                 $("#messages").hide();
                 $("#cancel-link").hide();
             }
 
-            function v40(v86, v95, v118, v74) {
-                v86.readAsArrayBuffer(v118.slice(0, v77.v51));
-                v86.onload = function(v98) {
-                    var v101 = new Uint8Array(v98.target.result), v103, v123;
-                    for (var v161 = 2; v161 < v101.length; v161++) {
-                        if (v101[v161] == 0xFF) {
-                            if (!v103) {
-                                if (v101[v161 + 1] == 0xD8) {
-                                    v103 = v161;
+            function v42(v83, v101, v105, v73) {
+                v83.readAsArrayBuffer(v105.slice(0, v74.v47));
+                v83.onload = function(v93) {
+                    var v91 = new Uint8Array(v93.target.result), v97, v129;
+                    for (var v151 = 2; v151 < v91.length; v151++) {
+                        if (v91[v151] == 0xFF) {
+                            if (!v97) {
+                                if (v91[v151 + 1] == 0xD8) {
+                                    v97 = v151;
                                 }
                             } else {
-                                if (v101[v161 + 1] == 0xD9) {
-                                    v123 = v161 + 2;
+                                if (v91[v151 + 1] == 0xD9) {
+                                    v129 = v151 + 2;
                                     break;
                                 }
                             }
                         }
                     }
-                    if (v103 && v123) {
-                        v74(new Blob([v101.subarray(v103, v123)],{
+                    if (v97 && v129) {
+                        v73(new Blob([v91.subarray(v97, v129)],{
                             type: "image/jpeg"
                         }));
                     } else {
-                        v74(null);
+                        v73(null);
                     }
                 }
                 ;
 
-                v86.onerror = function() {
-                    v74(null);
+                v83.onerror = function() {
+                    v73(null);
                 }
                 ;
             }
 
             function v22(v89) {
-                if (v77.v18 < 2) {
+                if (v74.v19 < 2) {
                     $(".fixed-top").hide();
                     $(".flex-container-select-files").show();
                     $("#messages").text("The selected folder has less than 2 images of supported types. There is nothing to compare. Please select a different folder.");
@@ -260,500 +261,525 @@
                     return;
                 }
                 $(".progress")[0].remove();
-                var v164 = "s";
+                var v150 = "s";
                 if (v89 + 1 == 1) {
-                    v164 = "";
+                    v150 = "";
                 }
-                v14(".progress-text", "Successfully scanned ".concat(v77.v94.length, " file", v164, "."));
-                if (v77.v48 == 0) {
-                    v14(".progress-text", "Zero similar images found from the successfully scanned ".concat(v77.v94.length, " file", v164, "."));
+                v13(".progress-text", "Successfully scanned ".concat(v74.v92.length, " file", v150, "."));
+                if (v74.v44 == 0) {
+                    v13(".progress-text", "Zero similar images found from the successfully scanned ".concat(v74.v92.length, " file", v150, "."));
                 }
                 return;
             }
 
-            function v70() {
-                var v162 = 0
-                  , v155 = 0
-                  , v137 = 0
-                  , v146 = 0
-                  , v67 = 0;
-                for (v162 = 1; v162 < v77.v90 - 1; v162++) {
-                    for (v155 = 1; v155 < v77.v90 - 1; v155++) {
-                        var v13 = new Map();
-                        for (v137 = -1; v137 < 2; v137++) {
-                            for (v146 = -1; v146 < 2; v146++) {
-                                v13.set((v155 + v146) * v77.v90 + v162 + v137, true);
+            function v68() {
+                var v63 = 0;
+                for (v155 = 1; v155 < v74.v85 - 1; v155++) {
+                    for (v158 = 1; v158 < v74.v85 - 1; v158++) {
+                        var v18 = new Map();
+                        for (v143 = -1; v143 < 2; v143++) {
+                            for (v137 = -1; v137 < 2; v137++) {
+                                v18.set((v158 + v137) * v74.v85 + v155 + v143, true);
                             }
                         }
-                        v77.v99[v67] = v13;
-                        v77.v92++;
-                        v67++;
+                        v74.v100[v63] = v18;
+                        v74.v87++;
+                        v63++;
                     }
                 }
                 return;
             }
 
-            v70();
-            var v65 = v77.v92 * v77.v38 * v77.v38 * v77.v66;
+            v68();
+            var v67 = v74.v87 * v74.v37 * v74.v37 * v74.v66;
+            // Number of pairs (to limit computational cost).
+            var v114 = [];
+            var v116 = [];
+            for (v151 = 0; v151 < v74.v87 - 1; v151++) {
+                for (v163 = v151 + 1; v163 < v74.v87; v163++) {
+                    v114.push(v151);
+                    v116.push(v163);
+                }
+            }
 
-            function v83(v89) {
-                var v138 = 0
-                  , v139 = 0
-                  , v84 = 0
-                  , v126 = 0;
+            var v65 = v74.v87 / 2;
+
+            function v80(v89) {
+
+                var v50 = 0;
+                var v140 = 0
+                  , v149 = 0;
                 var v144 = 0
-                  , v140 = 0
-                  , v143 = 0
-                  , v150 = 0;
+                  , v142 = 0
+                  , v139 = 0
+                  , v146 = 0;
+                var v111 = 0
+                  , v70 = 0;
+                var v154 = 0
+                  , v152 = 0
+                  , v162 = 0;
+                var v77 = 0
+                  , v125 = 0;
+                var v41 = [];
 
-                v144 = v77.v148,
-                v140 = v77.v147;
-                v143 = v77.v145,
-                v150 = v77.v149;
-                if (v144 * v150 * v77.v113 + v77.v134 * v144 * v143 < v143 * v140 * v77.v113 || v144 * v150 * v77.v113 > v143 * v140 * v77.v113 + v77.v134 * v144 * v143) {
+                v144 = v74.v136,
+                v142 = v74.v141;
+                v139 = v74.v145,
+                v146 = v74.v147;
+                if (v144 * v146 * v74.v112 + v74.v122 * v144 * v139 < v139 * v142 * v74.v112 || v144 * v146 * v74.v112 > v139 * v142 * v74.v112 + v74.v122 * v144 * v139) {
                     return false;
                 }
 
-                v84 = 0;
-                for (v76 = 0; v76 < v77.v92; v76++) {
-                    v138 = v77.v105[v76];
-                    v139 = v77.v93[v76];
-                    v84 += (v138 - v139) * (v138 - v139);
+                v77 = 0;
+                for (v70 = 0; v70 < v74.v87; v70++) {
+                    v140 = v74.v90[v70];
+                    v149 = v74.v96[v70];
+                    v77 += (v140 - v149) * (v140 - v149);
                 }
-                if (v84 > v65) {
-                    return false;
-                }
+                if (v77 <= v67) {
 
-                v126 = 0;
-                v47 = v64(v77.v105);
-                v41 = v64(v77.v93);
-                for (v76 = 0; v76 < v77.v92; v76++) {
-                    v138 = v47[v76];
-                    v139 = v41[v76];
-                    v126 += (v138 - v139) * (v138 - v139);
-                }
-                if (v126 > v65) {
-                    return false;
-                }
+                    v125 = 0;
+                    v41 = v56(v74.v96);
+                    for (v70 = 0; v70 < v74.v87; v70++) {
+                        v140 = v74.v38[v70];
+                        v149 = v41[v70];
+                        v125 += (v140 - v149) * (v140 - v149);
+                    }
+                    if (v125 <= v67) {
 
-                v126 = 0;
-                for (v76 = 0; v76 < v77.v92 - 1; v76++) {
-                    v136 = v77.v105[v76];
-                    v131 = v77.v105[v76 + 1];
-                    v135 = v77.v93[v76];
-                    v132 = v77.v93[v76 + 1];
-                    if (((v136 > v131) && (v135 > v132)) || ((v136 < v131) && (v135 < v132)) || ((v136 == v131) && (v135 == v132))) {
-                        v126++;
+                        v125 = 0;
+                        for (v70 = 0; v70 < v74.v87 - 1; v70++) {
+                            v123 = v74.v90[v70];
+                            v132 = v74.v90[v70 + 1];
+                            v134 = v74.v96[v70];
+                            v130 = v74.v96[v70 + 1];
+                            v125 += (((v123 > v132) && (v134 > v130)) || ((v123 < v132) && (v134 < v130)) || ((v123 == v132) && (v134 == v130)));
+                        }
+                        if (v125 >= v74.v87 * v74.v69) {
+                            v74.v34.push({
+                                v108: v77,
+                                v89: v89
+                            });
+                            return true;
+                        }
                     }
                 }
-                if (v126 < v77.v92 * v77.v69) {
-                    return false;
+
+                if (v74.v11 == true) {
+
+                    v111 = 0;
+                    v154 = 0;
+                    for (v152 = 0; v152 < v74.v87 - 1; v152++) {
+                        for (v162 = 0; v162 < v65; v162++) {
+                            v123 = v74.v90[v114[v154]];
+                            v132 = v74.v90[v116[v154]];
+                            v134 = v74.v96[v114[v154]];
+                            v130 = v74.v96[v116[v154]];
+                            v154++;
+                            v111 += ((v123 > v132) && (v134 > v130)) || ((v123 < v132) && (v134 < v130)) || ((v123 == v132) && (v134 == v130));
+                        }
+
+                        v50 = v152 * (v74.v48 - v74.v49) / (v74.v87 - 1) + v74.v49;
+                        if (v111 < v154 * v50) {
+                            return false;
+                        }
+                    }
+                    v74.v34.push({
+                        v108: v77,
+                        v89: v89
+                    });
+                    return true;
                 }
 
-                v77.v33.push({
-                    v117: v84,
-                    v89: v89
-                });
-                return true;
+                return false;
             }
 
-            function v14(v24, v122) {
-                $(v24)[0].textContent = v122;
+            function v13(v23, v115) {
+                $(v23)[0].textContent = v115;
             }
 
-            function v2() {
-                var v164 = "s";
-                if (v77.v48 == 1) {
-                    v164 = "";
+            function v3() {
+                var v150 = "s";
+                if (v74.v44 == 1) {
+                    v150 = "";
                 }
-                v14(".found-clusters", "Found ".concat(v77.v48, ' similar image', v164));
+                v13(".found-clusters", "Found ".concat(v74.v44, ' similar image', v150));
             }
 
-            function v3(v89) {
-                if (v89 + 1 == v77.v57) {
+            function v2(v89) {
+                if (v89 + 1 == v74.v54) {
                     return;
                 }
-                v14(".progress-text", "Please wait... Comparing to ".concat(v89, ' from ', v77.v57, ' selected files.'));
-                var v80 = Math.floor(100 * (v89 + 1) / v77.v57);
-                if (v80 < 5) {
-                    v80 = 5;
+                v13(".progress-text", "Please wait... Comparing to ".concat(v89, ' from ', v74.v54, ' selected files.'));
+                var v82 = Math.floor(100 * (v89 + 1) / v74.v54);
+                if (v82 < 5) {
+                    v82 = 5;
                 }
-                var v75 = "".concat(v80, "%");
+                var v75 = "".concat(v82, "%");
                 $("#progress-bar").width(v75);
             }
-            function v85(v49, v36) {
-                var v115 = document.createElement("div");
-                v115.className = v49;
-                v36.appendChild(v115);
-                return v115;
+            function v81(v53, v36) {
+                var v117 = document.createElement("div");
+                v117.className = v53;
+                v36.appendChild(v117);
+                return v117;
             }
 
-            var v52 = document.getElementById("clusters");
-            function v26(v89) {
+            var v46 = document.getElementById("clusters");
+            function v21(v89) {
 
-                var v128 = v62(v89);
-                v128.id = v89;
-                v52.appendChild(v128);
+                var v124 = v61(v89);
+                v124.id = v89;
+                v46.appendChild(v124);
 
-                v77.v33.sort(function(v157, v151) {
-                    if (v157.v117 > v151.v117) {
+                v74.v34.sort(function(v153, v159) {
+                    if (v153.v108 > v159.v108) {
                         return 1;
                     }
-                    if (v157.v117 < v151.v117) {
+                    if (v153.v108 < v159.v108) {
                         return -1;
                     }
                     return 0;
                 });
 
-                var v161 = 0;
-                for (v161 = 0; v161 < v77.v33.length; v161++) {
-                    document.getElementById(v77.v33[v161].v89).style.order = v161;
+                var v151 = 0;
+                for (v151 = 0; v151 < v74.v34.length; v151++) {
+                    document.getElementById(v74.v34[v151].v89).style.order = v151;
                 }
             }
 
-            function v62(v89) {
-                var v130 = new Image();
-                var v128 = document.createElement("div");
-                v128.className = "cluster";
-                v128.id = v89;
-                var v29 = v85("cluster-content", v128);
-                var v79 = v85("cluster-imgs", v29);
-                var v88 = v85("cluster-img-div", v79);
-                v130.width = v77.v44;
-                v88.appendChild(v130);
-                v130.classList.add("cluster-img");
-                var v56 = v85("image-size", v88);
-                v56.textContent = "".concat(v77.v145, "×", v77.v149);
-                var v25 = v85("cluster-paths", v29);
-                var v59 = v85("img-path", v25);
-                v59.textContent = v77.v94[v89].webkitRelativePath;
-                v28(v89, v130, v56);
-                return v128;
+            function v61(v89) {
+                var v126 = new Image();
+                var v124 = document.createElement("div");
+                v124.className = "cluster";
+                v124.id = v89;
+                var v26 = v81("cluster-content", v124);
+                var v76 = v81("cluster-imgs", v26);
+                var v88 = v81("cluster-img-div", v76);
+                v126.width = v74.v40;
+                v88.appendChild(v126);
+                v126.classList.add("cluster-img");
+                var v60 = v81("image-size", v88);
+                v60.textContent = "".concat(v74.v145, "×", v74.v147);
+                var v25 = v81("cluster-paths", v26);
+                var v55 = v81("img-path", v25);
+                v55.textContent = v74.v92[v89].webkitRelativePath;
+                v28(v89, v126, v60);
+                return v124;
             }
 
-            function v28(v89, v130, v56) {
-                var v86 = new FileReader();
-                v86.onload = function() {
+            function v28(v89, v126, v60) {
+                var v83 = new FileReader();
+                v83.onload = function() {
                     return function(e) {
-                        var v54 = new Image();
-                        v54.src = e.target.result;
-                        var v91 = document.createElement("canvas");
-                        var v127 = v91.getContext("2d");
-                        v54.onload = function() {
-                            v56.textContent = "".concat(v54.width, "×", v54.height);
-                            if (v54.width >= v54.height) {
-                                v91.height = v77.v44 * 2;
-                                v91.width = ~~(v54.width * v91.height / v54.height);
+                        var v51 = new Image();
+                        v51.src = e.target.result;
+                        var v86 = document.createElement("canvas");
+                        var v133 = v86.getContext("2d");
+                        v51.onload = function() {
+                            v60.textContent = "".concat(v51.width, "×", v51.height);
+                            if (v51.width >= v51.height) {
+                                v86.height = v74.v40 * 2;
+                                v86.width = ~~(v51.width * v86.height / v51.height);
                             } else {
-                                v91.width = v77.v44 * 2;
-                                v91.height = ~~(v54.height * v91.width / v54.width);
+                                v86.width = v74.v40 * 2;
+                                v86.height = ~~(v51.height * v86.width / v51.width);
                             }
-                            v130.width = v91.width / 2;
-                            v130.height = v91.height / 2;
-                            v127.drawImage(v54, 0, 0, v91.width, v91.height);
-                            v130.src = v91.toDataURL(v77.v17, v77.v10);
-                            v91 = null;
-                            v127 = null;
-                            v54 = null;
+                            v126.width = v86.width / 2;
+                            v126.height = v86.height / 2;
+                            v133.drawImage(v51, 0, 0, v86.width, v86.height);
+                            v126.src = v86.toDataURL(v74.v14, v74.v9);
                             v86 = null;
-                            v77.v9++;
+                            v133 = null;
+                            v51 = null;
+                            v83 = null;
+                            v74.v8++;
                         }
                         ;
                     }
                     ;
                 }();
-                v86.readAsDataURL(v77.v94[v89]);
+                v83.readAsDataURL(v74.v92[v89]);
             }
 
-            function v58() {
-                var v116 = "";
-                var v161 = 0;
-                for (v161 = 0; v161 < v77.v33.length; v161++) {
-                    v116 = v116.concat(v77.v94[v77.v33[v161].v89].webkitRelativePath, v77.v34);
+            function v57() {
+                var v121 = "";
+                var v151 = 0;
+                for (v151 = 0; v151 < v74.v34.length; v151++) {
+                    v121 = v121.concat(v74.v92[v74.v34[v151].v89].webkitRelativePath, v74.v31);
                 }
-                v116 = v116.slice(0, -1);
-                $(".textarea").val(v116);
+                v121 = v121.slice(0, -1);
+                $(".textarea").val(v121);
                 $(".textarea").toggleClass("textareaon");
             }
 
-            function v15() {
+            function v16() {
                 $("#terms-of-service").hide();
                 $(".text-left").hide();
                 $(".vertical-center-row").toggleClass("vertical-center-narrow");
-                v77.v0 = setTimeout(function() {
+                v74.v0 = setTimeout(function() {
                     $("#messages").text('Please wait if you selected a very large number of images: it may take tens of seconds before the search starts.');
                     $("#messages").show();
                     $("#image-selector").hide();
                     $("#folder-selector").hide();
-                    v77.v71 = $("#fast-option")[0].checked;
                     $("#fast").hide();
                     $("#cancel-link").show();
-                }, v77.v1);
+                }, v74.v1);
             }
 
-            function v112(v163) {
-                return Math.floor(Math.random() * v163);
+            function v148(v154, v120) {
+                var v163 = Math.floor(v154 / v120);
+                var v151 = v154 - v120 * v163;
+                return [v151, v163];
             }
 
-            function v156(v161, v158, v121) {
-                return v121 * v158 + v161;
+            function v107(v78, v151, v163, v120) {
+                return [v78[v163 * (v120 * 4) + (v151 * 4)], v78[v163 * (v120 * 4) + (v151 * 4) + 1], v78[v163 * (v120 * 4) + (v151 * 4) + 2]];
             }
 
-            function v141(v156, v121) {
-                var v158 = Math.floor(v156 / v121);
-                var v161 = v156 - v121 * v158;
-                return [v161, v158];
-            }
-
-            function v111(v81, v161, v158, v121) {
-                var v152 = v81[v158 * (v121 * 4) + (v161 * 4)];
-                var v153 = v81[v158 * (v121 * 4) + (v161 * 4) + 1];
-                var v151 = v81[v158 * (v121 * 4) + (v161 * 4) + 2];
-                var v157 = v81[v158 * (v121 * 4) + (v161 * 4) + 3];
-                return [v152, v153, v151, v157];
-            }
-
-            function v60(v162, v155, v90) {
-                if (v162 < 0 || v155 < 0 || v162 >= v90 || v155 >= v90) {
+            function v58(v155, v158, v85) {
+                if (v155 < 0 || v158 < 0 || v155 >= v85 || v158 >= v85) {
                     return true;
                 }
                 return false;
             }
-            function v55(v81) {
+            function v43(v78) {
 
-                var v97 = [];
-                var v161 = 0
-                  , v158 = 0
-                  , v160 = 0
-                  , v163 = 0;
-                var v152 = 0
-                  , v153 = 0
-                  , v151 = 0;
-                var v126 = 0
-                  , v164 = 0;
-                var v76 = 0;
-                var v102 = [];
-                var v96 = [];
-                var v82 = [];
+                var v95 = [];
+                var v151 = 0
+                  , v163 = 0
+                  , v161 = 0
+                  , v162 = 0;
+                var v157 = 0
+                  , v156 = 0
+                  , v159 = 0;
+                var v125 = 0
+                  , v150 = 0;
+                var v70 = 0;
+                var v99 = [];
+                var v94 = [];
+                var v79 = [];
 
-                for (v142 = 0; v142 < v77.v99.length; v142++) {
-                    v126 = 0;
-                    v164 = 0;
-                    for (var [v156,v104] of v77.v99[v142]) {
-                        v102 = v141(v156, v77.v90);
-                        v161 = v102[0];
-                        v158 = v102[1];
-                        for (v154 = 0; v154 < v72.v37; v154++) {
-                            v96 = v141(v154, v77.v46);
-                            v160 = v96[0];
-                            v163 = v96[1];
-                            v82 = v111(v81, v161 * v77.v46 + v160, v158 * v77.v46 + v163, v72.v114);
-                            v152 = v82[0];
-                            v153 = v82[1];
-                            v151 = v82[2];
-                            switch (v142 % 3) {
+                for (v138 = 0; v138 < v74.v100.length; v138++) {
+                    v125 = 0;
+                    v150 = 0;
+                    for (var [v154,v98] of v74.v100[v138]) {
+                        v99 = v148(v154, v74.v85);
+                        v151 = v99[0];
+                        v163 = v99[1];
+                        for (v152 = 0; v152 < v72.v32; v152++) {
+                            v94 = v148(v152, v74.v39);
+                            v161 = v94[0];
+                            v162 = v94[1];
+                            v79 = v107(v78, v151 * v74.v39 + v161, v163 * v74.v39 + v162, v72.v106);
+                            v157 = v79[0];
+                            v156 = v79[1];
+                            v159 = v79[2];
+                            switch (v138 % 3) {
                             case 0:
-                                v126 += v152;
-                                v164++;
+                                v125 += v157;
+                                v150++;
                                 break;
                             case 1:
-                                v126 += v153;
-                                v164++;
+                                v125 += v156;
+                                v150++;
                                 break;
                             case 2:
-                                v126 += v151;
-                                v164++;
+                                v125 += v159;
+                                v150++;
                             }
                         }
 
                     }
-                    v97[v76] = v126 / v164;
-                    v76++;
+                    v95[v70] = v125 / v150;
+                    v70++;
                 }
-                return v97;
+                return v95;
             }
 
-            function v64(v125) {
-                var v87 = [];
-                var v159 = v125.length;
+            function v56(v135) {
+                var v84 = [];
+                var v160 = v135.length;
+                var v119 = 0;
+                var v104 = Number.POSITIVE_INFINITY;
+                var v113 = 0;
+                var v118 = Number.POSITIVE_INFINITY;
                 var v109 = 0;
-                var v107 = Number.POSITIVE_INFINITY;
-                var v108 = 0;
-                var v119 = Number.POSITIVE_INFINITY;
-                var v106 = 0;
-                var v110 = Number.POSITIVE_INFINITY;
-                for (v163 = 0; v163 < v159; v163 += 3) {
-                    if (v125[v163] > v109) {
-                        v109 = v125[v163];
+                var v103 = Number.POSITIVE_INFINITY;
+                for (v162 = 0; v162 < v160; v162 += 3) {
+                    if (v135[v162] > v119) {
+                        v119 = v135[v162];
                     }
-                    if (v125[v163] < v107) {
-                        v107 = v125[v163];
+                    if (v135[v162] < v104) {
+                        v104 = v135[v162];
                     }
                 }
-                for (v163 = 1; v163 < v159; v163 += 3) {
-                    if (v125[v163] > v108) {
-                        v108 = v125[v163];
+                for (v162 = 1; v162 < v160; v162 += 3) {
+                    if (v135[v162] > v113) {
+                        v113 = v135[v162];
                     }
-                    if (v125[v163] < v119) {
-                        v119 = v125[v163];
-                    }
-                }
-                for (v163 = 2; v163 < v159; v163 += 3) {
-                    if (v125[v163] > v106) {
-                        v106 = v125[v163];
-                    }
-                    if (v125[v163] < v110) {
-                        v110 = v125[v163];
+                    if (v135[v162] < v118) {
+                        v118 = v135[v162];
                     }
                 }
-                var v129 = v109 - v107;
-                var v124 = v108 - v119;
-                var v133 = v106 - v110;
-                for (v163 = 0; v163 < v159; v163 += 3) {
-                    v87[v163] = (v125[v163] - v107) * 255 / v129;
+                for (v162 = 2; v162 < v160; v162 += 3) {
+                    if (v135[v162] > v109) {
+                        v109 = v135[v162];
+                    }
+                    if (v135[v162] < v103) {
+                        v103 = v135[v162];
+                    }
                 }
-                for (v163 = 1; v163 < v159; v163 += 3) {
-                    v87[v163] = (v125[v163] - v119) * 255 / v124;
+                var v128 = v119 - v104;
+                var v127 = v113 - v118;
+                var v131 = v109 - v103;
+                for (v162 = 0; v162 < v160; v162 += 3) {
+                    v84[v162] = (v135[v162] - v104) * 255 / v128;
                 }
-                for (v163 = 2; v163 < v159; v163 += 3) {
-                    v87[v163] = (v125[v163] - v110) * 255 / v133;
+                for (v162 = 1; v162 < v160; v162 += 3) {
+                    v84[v162] = (v135[v162] - v118) * 255 / v127;
                 }
-                return v87;
+                for (v162 = 2; v162 < v160; v162 += 3) {
+                    v84[v162] = (v135[v162] - v103) * 255 / v131;
+                }
+                return v84;
             }
 
-            function v7(v94) {
+            function v4(v92) {
                 // If no errors: gray out and remove click event from the "1. Select an image" button.
 
-                const v35 = v94[0];
-                var v86 = new FileReader();
-                var v130 = new Image();
-                var v91 = document.createElement("canvas");
-                v91.width = v72.v114;
-                v91.height = v72.v114;
-                var v127 = v91.getContext("2d");
-                v8();
+                const v33 = v92[0];
+                var v83 = new FileReader();
+                var v126 = new Image();
+                var v86 = document.createElement("canvas");
+                v86.width = v72.v106;
+                v86.height = v72.v106;
+                var v133 = v86.getContext("2d");
+                v5();
 
-                v86.onerror = function() {
-                    v31();
+                v83.onerror = function() {
+                    v27();
                     return;
                 }
                 ;
-                v86.onload = function() {
+                v83.onload = function() {
                     return function(e) {
-                        v130.src = e.target.result;
+                        v126.src = e.target.result;
 
-                        v130.onerror = function() {
-                            v31();
+                        v126.onerror = function() {
+                            v27();
                             return;
                         }
                         ;
 
-                        v130.onload = function() {
+                        v126.onload = function() {
                             return function(e2) {
-                                v127.drawImage(v130, 0, 0, v72.v114, v72.v114);
-                                v77.v105 = v55(v127.getImageData(0, 0, v72.v114, v72.v114).data);
+                                v133.drawImage(v126, 0, 0, v72.v106, v72.v106);
+                                v74.v90 = v43(v133.getImageData(0, 0, v72.v106, v72.v106).data);
 
-                                v77.v47 = v64(v77.v105);
+                                v74.v38 = v56(v74.v90);
 
-                                v77.v148 = v130.width;
-                                v77.v147 = v130.height;
+                                v74.v136 = v126.width;
+                                v74.v141 = v126.height;
 
-                                v12();
+                                v17();
                             }
                             ;
                         }();
                     }
                     ;
                 }();
-                v86.readAsDataURL(v94[0]);
+                v83.readAsDataURL(v92[0]);
             }
 
-            function v50(v94) {
-                v77.v9 = 0;
-                clearTimeout(v77.v0);
+            function v52(v92) {
+                v74.v12 = $("#fast-option")[0].checked;
+                v74.v11 = $("#exposure-option")[0].checked;
+                v74.v8 = 0;
+                clearTimeout(v74.v0);
                 $("#folder-selector").hide();
-                v77.v94 = v94;
-                v77.v73 = v94[0].webkitRelativePath.split("/")[0];
-                v77.v57 = v94.length;
+                v74.v92 = v92;
+                v74.v71 = v92[0].webkitRelativePath.split("/")[0];
+                v74.v54 = v92.length;
                 var v89 = 0;
-                var v95 = 0;
-                var v86 = new FileReader();
-                var v130 = new Image();
-                var v91 = document.createElement("canvas");
-                v91.width = v72.v114;
-                v91.height = v72.v114;
-                var v127 = v91.getContext("2d");
+                var v101 = 0;
+                var v83 = new FileReader();
+                var v126 = new Image();
+                var v86 = document.createElement("canvas");
+                v86.width = v72.v106;
+                v86.height = v72.v106;
+                var v133 = v86.getContext("2d");
                 $(".flex-container-select-files").hide();
                 $(".fixed-top").show();
-                $(".view-list").click(v58);
+                $(".view-list").click(v57);
                 $(".fixed-white-2").show();
-                v2();
-                v32(v89, v95, v86, v130, v127);
+                v3();
+                v35(v89, v101, v83, v126, v133);
             }
-            function v32(v89, v95, v86, v130, v127) {
+            function v35(v89, v101, v83, v126, v133) {
 
-                if (v89 >= v77.v57) {
+                if (v89 >= v74.v54) {
                     v22(v89);
                     return;
                 }
 
-                if (!v77.v30.test(v77.v94[v89].type) || v77.v94[v89].size > v77.v11) {
+                if (!v74.v29.test(v74.v92[v89].type) || v74.v92[v89].size > v74.v10) {
                     v89++;
-                    v32(v89, v95, v86, v130, v127);
+                    v35(v89, v101, v83, v126, v133);
                     return;
                 }
 
-                if (v77.v71 && v77.v94[v89].type == "image/jpeg" && !v77.v27) {
+                if (v74.v12 && v74.v92[v89].type == "image/jpeg" && !v74.v30) {
 
-                    v40(v86, v95, v77.v94[v89], function(v120) {
+                    v42(v83, v101, v74.v92[v89], function(v110) {
 
-                        if (v120 == null) {
-                            v77.v27 = true;
-                            v32(v89, v95, v86, v130, v127);
+                        if (v110 == null) {
+                            v74.v30 = true;
+                            v35(v89, v101, v83, v126, v133);
                             return;
 
                         } else {
 
-                            v130.src = URL.createObjectURL(v120);
+                            v126.src = URL.createObjectURL(v110);
 
-                            v130.onload = function() {
+                            v126.onload = function() {
 
-                                v77.v18++;
+                                v74.v19++;
                                 if (v89 < 5 || v89 % 5 === 0) {
-                                    v3(v89);
+                                    v2(v89);
                                 }
-                                v127.drawImage(v130, 0, 0, v72.v114, v72.v114);
+                                v133.drawImage(v126, 0, 0, v72.v106, v72.v106);
 
-                                v77.v93 = v55(v127.getImageData(0, 0, v72.v114, v72.v114).data);
-                                v77.v145 = v130.width;
-                                v77.v149 = v130.height;
+                                v74.v96 = v43(v133.getImageData(0, 0, v72.v106, v72.v106).data);
+                                v74.v145 = v126.width;
+                                v74.v147 = v126.height;
 
-                                v77.v68 = v95 + 1;
-                                v77.v61 = v89 + 1;
+                                v74.v64 = v101 + 1;
+                                v74.v62 = v89 + 1;
 
-                                if (v83(v89)) {
-                                    v77.v48++;
-                                    v26(v89);
-                                    v2();
+                                if (v80(v89)) {
+                                    v74.v44++;
+                                    v21(v89);
+                                    v3();
                                 }
 
                                 v89++;
-                                v95++;
+                                v101++;
 
-                                if (!v77.v16) {
-                                    v77.v16 = true;
+                                if (!v74.v15) {
+                                    v74.v15 = true;
                                 }
-                                v77.v27 = false;
-                                URL.revokeObjectURL(v130.src);
-                                v32(v89, v95, v86, v130, v127);
+                                v74.v30 = false;
+                                URL.revokeObjectURL(v126.src);
+                                v35(v89, v101, v83, v126, v133);
                                 return;
                             }
                             ;
 
-                            v130.onerror = function() {
-                                URL.revokeObjectURL(v130.src);
-                                v77.v27 = true;
-                                v32(v89, v95, v86, v130, v127);
+                            v126.onerror = function() {
+                                URL.revokeObjectURL(v126.src);
+                                v74.v30 = true;
+                                v35(v89, v101, v83, v126, v133);
                                 return;
                             }
                             ;
@@ -763,64 +789,64 @@
                     });
 
                 } else {
-                    v77.v27 = true;
+                    v74.v30 = true;
                 }
 
-                if (v77.v27 == false) {
+                if (v74.v30 == false) {
                     return;
                 }
 
-                v86.readAsDataURL(v77.v94[v89]);
+                v83.readAsDataURL(v74.v92[v89]);
 
-                v86.onerror = function() {
+                v83.onerror = function() {
                     v89++;
-                    v77.v27 = false;
-                    v32(v89, v95, v86, v130, v127);
+                    v74.v30 = false;
+                    v35(v89, v101, v83, v126, v133);
                     return;
                 }
                 ;
 
-                v86.onload = function(evt) {
-                    v130.src = evt.target.result;
+                v83.onload = function(evt) {
+                    v126.src = evt.target.result;
 
-                    v130.onerror = function() {
+                    v126.onerror = function() {
                         v89++;
-                        v77.v27 = false;
-                        v32(v89, v95, v86, v130, v127);
+                        v74.v30 = false;
+                        v35(v89, v101, v83, v126, v133);
                         return;
                     }
                     ;
 
-                    v130.onload = function() {
-                        v77.v18++;
+                    v126.onload = function() {
+                        v74.v19++;
                         if (v89 < 5 || v89 % 5 === 0) {
-                            v3(v89);
+                            v2(v89);
                         }
-                        v127.drawImage(v130, 0, 0, v72.v114, v72.v114);
+                        v133.drawImage(v126, 0, 0, v72.v106, v72.v106);
 
-                        v77.v93 = v55(v127.getImageData(0, 0, v72.v114, v72.v114).data);
-                        v77.v145 = v130.width;
-                        v77.v149 = v130.height;
+                        v74.v96 = v43(v133.getImageData(0, 0, v72.v106, v72.v106).data);
+                        v74.v145 = v126.width;
+                        v74.v147 = v126.height;
 
-                        v77.v68 = v95 + 1;
-                        v77.v61 = v89 + 1;
+                        v74.v64 = v101 + 1;
+                        v74.v62 = v89 + 1;
 
-                        if (v83(v89)) {
-                            v77.v48++;
-                            v26(v89);
-                            v2();
+                        if (v80(v89)) {
+                            v74.v44++;
+                            v21(v89);
+                            v3();
 
                         }
 
                         v89++;
-                        v95++;
+                        v101++;
 
-                        if (!v77.v16) {
-                            v77.v16 = true;
+                        if (!v74.v15) {
+                            v74.v15 = true;
                         }
-                        v77.v27 = false;
-                        URL.revokeObjectURL(v130.src);
-                        v32(v89, v95, v86, v130, v127);
+                        v74.v30 = false;
+                        URL.revokeObjectURL(v126.src);
+                        v35(v89, v101, v83, v126, v133);
                         return;
                     }
                     ;
@@ -830,4 +856,3 @@
         </script>
     </body>
 </html>
-
