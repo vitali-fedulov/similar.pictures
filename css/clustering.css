@@ -184,7 +184,16 @@ html, body {
 	margin-bottom: 8px;
 }
 
+
 .fast-option {
+    display: flex;
+    flex-direction: row;
+	margin-top: 24px;
+    font-size: 14px;
+    max-width: 380px;
+}
+
+.exposure-option {
     display: flex;
     flex-direction: row;
 	margin-top: 14px;
@@ -192,7 +201,7 @@ html, body {
     max-width: 380px;
 }
 
-.fast-option-text {
+.option-text {
     margin-left: 6px;
     font-size: 12px;
     color: #888;
