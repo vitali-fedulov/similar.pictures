@@ -4,7 +4,8 @@
 
 * {
 	font-family: 'Roboto', serif;
-	color: #333;
+    color: #b3b3b3;
+    background-color: #333;
 }
 
 p, ul, li, a {
@@ -17,14 +18,16 @@ div {
 }
 
 a {
-	color: #005eda;
+	color: #3c9eff;
 	text-decoration: none;
 	cursor: pointer;
   }
 a:hover {
-	background-color: rgb(248, 248, 248);
-	color: #004aab;
+	color: #88c3ff;
+    background-color: rgb(58, 58, 58);
 }
+
+
 
 .header {
 	margin-bottom: 18px;
@@ -54,9 +57,17 @@ h2{
 
 .logo-dot {
 	font-family: 'Roboto', serif;
-	color: red;
+    color: red;
+    background-color: #383838;
 }
 
+.logo-href {
+    background-color: #383838;
+}
+
+.logo-href:hover {
+	background-color: #383838;
+}
 
 .line {
 	flex: auto;
@@ -100,11 +111,12 @@ h2{
 
 .button-passive {
     cursor: default;
-    background-color: #3c9eff38;
+    color: #7b7b7b;
+    background-color: #3a4046;
 }
 .button-passive:hover {
-	color: white;
-	background-color: #3c9eff38;;
+    color: #7b7b7b;
+    background-color: #3a4046;
 }
 
 .margin-bottom {
@@ -175,8 +187,9 @@ html, body {
 
 .terms-of-service-header {
     margin-top: 10px;
-    color: dimgrey;
-    letter-spacing: 0.25em;
+    font-size: 12pt;
+    color: #656565;
+    letter-spacing: 0.05em;
     margin-bottom: 0px;
 }
 
@@ -204,11 +217,11 @@ html, body {
 .option-text {
     margin-left: 6px;
     font-size: 12px;
-    color: #888;
+    color: #b3b3b3;
 }
 
 #messages {
-    background-color: #fcf8e3;
+    background-color: #feffc3;
     padding: 5px;
     text-align: center;
 	color: #565656;
@@ -250,17 +263,18 @@ input {
     position: fixed;
     width: 100%;
     min-width: 530px;
-    background-color: white;
+    /* background-color: #333; */
 }
 
 .fixed-top-gray {
     height: 54px;
-    background-color: #f3f3f3;
-    border-bottom: 1px solid #dedede;
+    background-color: #383838;
+    border-bottom: 1px solid #272727;
 }
 
 .logo {
-	color: #3c9eff;
+    color: #3c9eff;
+    background-color: #383838;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     line-height: 1.42857143;
 	display: inline-block;
@@ -294,8 +308,8 @@ input {
 .fixed-white-2 {
     padding-left: 15px;
     padding-bottom: 5px;
-    border-bottom: 1px solid #dedede;
-    margin-right: 12px;
+    border-bottom: 1px solid #464646;
+    padding-right: 20px;
 }
 
 .progress {
@@ -331,8 +345,9 @@ input {
     display: none;
     margin-bottom: 14px;
     font-size: 0.8em;
-    color: black;
-    border-color: black;
+    color: #dcdcdc;
+    background-color: #3a3a3a;
+    border-color: #6b6b6b;
 }
 
 .textareaon {
@@ -378,7 +393,7 @@ input {
 .cluster-num {
     font-family: 'Roboto', serif;
     font-size: 1.6em;
-    color: dimgray;
+    color: #bfbfbf;
     padding: 0px 8px 0px 8px;
     text-align: center;
 }
@@ -390,8 +405,6 @@ input {
 }
 
 .cluster-img-div {
-    background-color: gainsboro;
-    color: black;
     text-align: center;
     margin: 0px 3px 3px 0px;
     padding: 1px;
@@ -402,7 +415,15 @@ img {
 }
 
 .img-path {
-    color: dimgray;
+    color: #bfbfbf;
     white-space: nowrap;
     line-height: 1.42857143;
+}
+
+.image-size {
+    color: #b3b3b3;
+    background-color: #292929;
+    letter-spacing: 0.1em;
+    font-size: 13px;
+    padding: 3px;
 }
