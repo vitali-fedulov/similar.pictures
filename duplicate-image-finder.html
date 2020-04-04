@@ -1,0 +1,713 @@
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2020 -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Duplicate image finder</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="js/jquery.min.js"></script>
+        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
+        <link rel="icon" type="image/png" href="images/favicon.png">
+        <link rel="stylesheet" type="text/css" href="css/clustering.css">
+    </head>
+    <body>
+        <div class="flex-container-select-files">
+            <div class="flex-center-horizontally">
+                <div>
+                    <h1 class="text-centered clustering-title">Duplicate Image Finder</h1>
+                </div>
+                <div id="terms-of-service">
+                    <p class="terms-of-service-header text-centered">Terms of service and data protection</p>
+                    <div id="terms"></div>
+                </div>
+                <div>
+                    <p id="messages" class="hidden">Messages</p>
+                    <div id="ok-button" class="text-centered">
+                        <div class="button">OK</div>
+                    </div>
+                    <div id="file-selector" class="text-centered">
+                        <input class="hidden" type="file" id="filesSelected" webkitdirectory multiple accept="image/*" onchange="v50(this.files)" onclick="v12()">
+                        <a class="button">Select a folder with images</a>
+                    </div>
+                    <div class="fast-option">
+                        <input type="checkbox" id="fast-option" onclick="v5()">
+                        <div class="option-text">Option to accelerate the search (recommended). It has somewhat larger chance to mismatch pictures. The acceleration can be considerable for folders with many JPEG images.</div>
+                    </div>
+                    <div class="link-block text-centered">
+                        <a class="home-cancel-link" id="cancel-link" onclick="v49()">Cancel</a>
+                        <a class="home-cancel-link" href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-top hidden">
+            <div class="fixed-top-gray">
+                <a href="index.html" class="logo-href">
+                    <span class="logo">
+                        Similar<span class="logo-dot">.</span>Pictures
+                    </span>
+                </a>
+                <div class="button button-new-search">New clustering</div>
+            </div>
+            <div class="fixed-white-1">
+                <div class="progress">
+                    <div id="progress-bar"></div>
+                </div>
+                <div class="progress-text"></div>
+            </div>
+            <div class="fixed-white-2 hidden">
+                <span class="found-clusters"></span>
+                <span>(</span>
+                <span class="view-list">show/hide as list</span>
+                <span>)</span>
+                <textarea class="textarea"></textarea>
+                <p class="explanation">
+                    <small class="small">Scroll down to view all clusters. Keep the browser tab open to avoid stopping the clustering process.</small>
+                </p>
+            </div>
+        </div>
+        <div id="clusters" class="clusters"></div>
+        <script>
+            $(document).ready(function() {
+                v8();
+                $("#terms").load("tos_en.html");
+                $("#ok-button").hide();
+                $("#cancel-link").hide();
+                $(".button-new-search").click(v54);
+                $("#ok-button").click(v54);
+                $(document).ready(function() {
+                    $(this).scrollTop(0);
+                });
+            });
+
+            var v75 = {
+
+                v94: 24,
+                v76: 2,
+                v37: 12,
+                v45: 80000,
+                v9: 40 * 1024 * 1024,
+                v71: 0,
+                v62: 0,
+                v15: false,
+
+                v91: 0,
+                v73: 0,
+
+                v102: [],
+                v47: [],
+                v10: [],
+                v80: [],
+                v77: [],
+                v83: [],
+                v46: 0,
+                v21: [],
+                v127: 10,
+                v114: 100,
+                v33: 50,
+                v68: 0.2,
+                v51: 2,
+                v74: 0.7,
+                v38: [],
+                v28: /(^image\/gif$)|(^image\/jpeg$)|(^image\/jpg$)|(^image\/bmp$)|(^image\/png$)|(^image\/webp$)/,
+                v78: "",
+
+                v105: null,
+                v53: 0,
+
+                v29: false,
+
+                v1: 1000,
+                v0: null,
+                v16: "image/jpeg",
+                v7: 0.6,
+                v36: 160,
+                v30: '\n',
+                v19: '\n\n',
+                v20: 0,
+                v17: false,
+                v11: 0,
+            };
+
+            var v81 = {
+                v34: v75.v37 * v75.v37,
+                v117: v75.v94 * v75.v37,
+                v84: v75.v94 * v75.v94,
+            };
+
+            function v5() {
+                localStorage.setItem("fast-option", $("#fast-option")[0].checked);
+                return;
+            }
+
+            function v8() {
+                if (localStorage.getItem("fast-option") == null) {
+                    $("#fast-option")[0].checked = true;
+                    return;
+                }
+                if (localStorage.getItem("fast-option") == 'false') {
+                    $("#fast-option")[0].checked = false;
+                } else {
+                    $("#fast-option")[0].checked = true;
+                }
+                return;
+            }
+
+            function v49() {
+                v54();
+            }
+
+            function v54() {
+                location.reload();
+            }
+
+            document.getElementById('file-selector').addEventListener('click', v27);
+
+            function v27() {
+                var v104 = document.getElementById('filesSelected');
+                if (!!v104.webkitdirectory == false) {
+                    alert('This browser does not support folder selection. Please try latest desktop Chrome, Firefox or Edge.');
+                    return;
+                }
+                v104.click();
+            }
+
+            function v35(v97, v103, v111, v82) {
+                v97.readAsArrayBuffer(v111.slice(0, v75.v45));
+                v97.onload = function(v107) {
+                    var v108 = new Uint8Array(v107.target.result), v100, v124;
+                    var v126 = v108.length;
+                    var v148 = 0;
+                    for (v148 = 2; v148 < v126; v148++) {
+                        if (v108[v148] == 0xFF) {
+                            if (!v100) {
+                                if (v108[v148 + 1] == 0xD8) {
+                                    v100 = v148;
+                                }
+                            } else {
+                                if (v108[v148 + 1] == 0xD9) {
+                                    v124 = v148 + 2;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (v100 && v124) {
+                        v82(new Blob([v108.subarray(v100, v124)],{
+                            type: "image/jpeg"
+                        }));
+                    } else {
+                        v82(null);
+                    }
+                }
+                ;
+
+                v97.onerror = function() {
+                    v82(null);
+                }
+                ;
+            }
+
+            function v23(v95) {
+                if (v75.v20 < 2) {
+                    $(".fixed-top").hide();
+                    $(".flex-container-select-files").show();
+                    $("#messages").text("The selected folder has less than 2 images of supported types. There is nothing to compare. Please select a different folder.");
+                    $("#messages").show();
+                    $("#file-selector").hide();
+                    $("#cancel-link").hide();
+                    $("#ok-button").show();
+                    return;
+                }
+                $(".progress")[0].remove();
+                var v144 = "s";
+                if (v95 + 1 == 1) {
+                    v144 = "";
+                }
+
+                v14(".progress-text", "Successfully scanned ".concat(v75.v105.length, " file", v144, "."));
+                if (v75.v46 == 0) {
+                    v14(".progress-text", "Zero similar images found from the successfully scanned ".concat(v75.v105.length, " file", v144, "."));
+                }
+
+                return;
+            }
+
+            function v70() {
+                var v66 = 0;
+                var v142 = 0
+                  , v139 = 0
+                  , v133 = 0
+                  , v133 = 0;
+                for (v142 = 1; v142 < v75.v94 - 1; v142 += v75.v76) {
+                    for (v139 = 1; v139 < v75.v94 - 1; v139 += v75.v76) {
+                        var v13 = [];
+                        for (v133 = -1; v133 < 2; v133++) {
+                            for (v136 = -1; v136 < 2; v136++) {
+                                v13.push((v139 + v136) * v75.v94 + v142 + v133);
+                            }
+                        }
+                        v75.v102[v66] = v13;
+                        v66++;
+                    }
+                }
+                v75.v86 = v13.length;
+                v75.v91 = v66;
+                v75.v73 = 1 / v66;
+
+                v81.v67 = v75.v91 * v75.v33 * v75.v33 * v75.v68;
+                v81.v58 = v81.v67 * v75.v51;
+
+                return;
+            }
+
+            v70();
+
+            function v4(v103, v72) {
+
+                var v96 = [];
+                var v60 = v75.v21[v103];
+                var v57 = v75.v21[v72];
+
+                if (typeof v60 === "undefined" && typeof v57 === "undefined") {
+                    v75.v21[v103] = v75.v46;
+                    v75.v21[v72] = v75.v46;
+                    v75.v83.push([v103, v72]);
+                    v75.v46++;
+                    v6(v75.v46 - 1);
+                    v18(v75.v46 - 1, v103);
+                    v18(v75.v46 - 1, v72);
+                    return;
+                }
+
+                if (typeof v60 === "number" && typeof v57 === "undefined") {
+                    v96 = v75.v83[v60];
+                    v96.push(v72);
+                    v75.v21[v72] = v60;
+                    v75.v83[v60] = v96;
+                    v18(v60, v72);
+                    return;
+                }
+
+                if (typeof v60 === "undefined" && typeof v57 === "number") {
+                    v96 = v75.v83[v57];
+                    v96.push(v103);
+                    v75.v21[v103] = v57;
+                    v75.v83[v57] = v96;
+                    v18(v57, v103);
+                    return;
+                }
+
+            }
+
+            function v61(v72) {
+
+                var v131 = 0
+                  , v129 = 0;
+                var v137 = 0
+                  , v134 = 0
+                  , v135 = 0
+                  , v130 = 0;
+                var v121 = 0
+                  , v79 = 0
+                  , v103 = 0;
+                var v39 = [[], [], []];
+                var v40 = v75.v47[v72];
+                v75.v10[v72] = v40;
+                var v103 = 0;
+
+                for (v103 = v72 - 1; v103 >= 0; v103--) {
+
+                    v137 = v75.v80[v103],
+                    v134 = v75.v77[v103];
+                    v135 = v75.v80[v72],
+                    v130 = v75.v77[v72];
+                    if (v137 * v130 * v75.v114 + v75.v127 * v137 * v135 < v135 * v134 * v75.v114 || v137 * v130 * v75.v114 > v135 * v134 * v75.v114 + v75.v127 * v137 * v135) {
+                        continue;
+                    }
+
+                    v39 = v75.v10[v103];
+
+                    v121 = 0;
+                    for (v79 = 0; v79 < v75.v91; v79++) {
+                        v131 = v39[0][v79];
+                        v129 = v40[0][v79];
+                        v121 += (v131 - v129) * (v131 - v129);
+                    }
+                    if (v121 > v81.v67) {
+                        continue;
+                    }
+
+                    v121 = 0;
+                    for (v79 = 0; v79 < v75.v91; v79++) {
+                        v131 = v39[1][v79];
+                        v129 = v40[1][v79];
+                        v121 += (v131 - v129) * (v131 - v129);
+                    }
+                    if (v121 > v81.v58) {
+                        continue;
+                    }
+
+                    v121 = 0;
+                    for (v79 = 0; v79 < v75.v91; v79++) {
+                        v131 = v39[2][v79];
+                        v129 = v40[2][v79];
+                        v121 += (v131 - v129) * (v131 - v129);
+                    }
+                    if (v121 > v81.v58) {
+                        continue;
+                    }
+
+                    v4(v103, v72);
+                    v3();
+
+                }
+                return;
+            }
+
+            function v14(v24, v116) {
+                $(v24)[0].textContent = v116;
+            }
+
+            function v3() {
+                var v144 = "s";
+                if (v75.v46 == 1) {
+                    v144 = "";
+                }
+                v14(".found-clusters", "Found ".concat(v75.v46, ' cluster', v144));
+            }
+
+            var v41 = $("#progress-bar");
+
+            function v2(v95) {
+                if (v95 + 1 == v75.v53) {
+                    return;
+                }
+                v14(".progress-text", "Please wait... Reading ".concat(v95, ' from ', v75.v53, ' selected files.'));
+                var v87 = ~~(100 * (v95 + 1) / v75.v53);
+                if (v87 < 5) {
+                    v87 = 5;
+                }
+                v41.width("".concat(v87, "%"));
+            }
+            function v89(v44, v32) {
+                var v110 = document.createElement("div");
+                v110.className = v44;
+                v32.appendChild(v110);
+                return v110;
+            }
+
+            var v43 = document.getElementById("clusters");
+
+            function v6(v65) {
+                var v63 = v89("cluster", v43);
+                var v69 = v89("cluster-num", v63);
+                v69.textContent = v65 + 1;
+                var v25 = v89("cluster-content", v63);
+                v89("cluster-imgs", v25);
+                v89("cluster-paths", v25);
+            }
+
+            function v18(v65, v103) {
+                var v90 = $(".cluster-imgs")[v65];
+                var v98 = v89("cluster-img-div", v90);
+                var v125 = new Image();
+                v125.classList.add("cluster-img");
+                v98.appendChild(v125);
+                var v64 = v89("image-size", v98);
+                var v22 = $(".cluster-paths")[v65];
+                var v52 = v89("img-path", v22);
+                var v111 = v75.v105[v75.v38[v103]];
+                v52.textContent = v111.webkitRelativePath;
+                v26(v111, v125, v64);
+            }
+
+            function v26(v111, v125, v64) {
+                var v97 = new FileReader();
+                v97.v111 = v111;
+                v97.onload = function() {
+                    return function(e) {
+                        var v42 = new Image();
+                        v42.src = e.target.result;
+                        var v92 = document.createElement("canvas");
+                        var v128 = v92.getContext("2d");
+                        v42.onload = function() {
+                            v64.textContent = "".concat(v42.width, "×", v42.height);
+                            if (v42.width >= v42.height) {
+                                v92.height = v75.v36 * 2;
+                                v92.width = ~~(v42.width * v92.height / v42.height);
+                            } else {
+                                v92.width = v75.v36 * 2;
+                                v92.height = ~~(v42.height * v92.width / v42.width);
+                            }
+                            v125.width = v92.width / 2;
+                            v125.height = v92.height / 2;
+                            v128.drawImage(v42, 0, 0, v92.width, v92.height);
+                            v125.src = v92.toDataURL(v75.v16, v75.v7);
+                            v92 = null;
+                            v128 = null;
+                            v42 = null;
+                            v97 = null;
+                            v75.v11++;
+                        }
+                        ;
+                    }
+                    ;
+                }();
+                v97.readAsDataURL(v111);
+            }
+
+            function v59() {
+                var v115 = "";
+                var v140 = 0;
+                var v148 = 0;
+                for (v140 = 0; v140 < v75.v46; v140++) {
+                    var v56 = v75.v83[v140];
+                    for (v148 = 0; v148 < v56.length - 1; v148++) {
+                        v115 = v115.concat(v75.v105[v75.v38[v56[v148]]].webkitRelativePath, v75.v30);
+                    }
+                    v115 = v115.concat(v75.v105[v75.v38[v56[v148]]].webkitRelativePath, v75.v19);
+                }
+                v115 = v115.slice(0, -2);
+                $(".textarea").val(v115);
+                $(".textarea").toggleClass("textareaon");
+            }
+
+            function v12() {
+                $("#terms-of-service").hide();
+                $(".text-left").hide();
+                $(".vertical-center-row").toggleClass("vertical-center-narrow");
+                v75.v0 = setTimeout(function() {
+                    $("#messages").text('Please wait if you selected a very large number of images: it may take tens of seconds before the clustering starts.');
+                    $("#messages").show();
+                    $("#file-selector").hide();
+                    $(".fast-option").hide();
+                    $("#cancel-link").show();
+                }, v75.v1);
+            }
+
+            function v118(v88, v148, v147, v120) {
+                return [v88[v147 * (v120 * 4) + (v148 * 4)], v88[v147 * (v120 * 4) + (v148 * 4) + 1], v88[v147 * (v120 * 4) + (v148 * 4) + 2]];
+            }
+            function v48(v88) {
+
+                var v99 = [[], [], []];
+                var v148 = 0
+                  , v147 = 0
+                  , v143 = 0
+                  , v141 = 0;
+                var v149 = 0
+                  , v150 = 0
+                  , v138 = 0;
+                var v106 = 0
+                  , v101 = 0
+                  , v109 = 0;
+                var v144 = 0;
+                var v85 = [];
+                var v132 = 0
+                  , v151 = 0
+                  , v146 = 0;
+
+                for (v132 = 0; v132 < v75.v91; v132++) {
+                    v106 = 0,
+                    v101 = 0,
+                    v109 = 0;
+                    v144 = 0;
+                    for (v151 = 0; v151 < v75.v86; v151++) {
+                        v148 = ~~(v75.v102[v132][v151] / v75.v94);
+                        v147 = v75.v102[v132][v151] % v75.v94;
+                        for (v146 = 0; v146 < v81.v34; v146++) {
+                            v143 = ~~(v146 / v75.v37);
+                            v141 = v146 % v75.v37;
+                            v85 = v118(v88, v148 * v75.v37 + v143, v147 * v75.v37 + v141, v81.v117);
+                            v149 = v85[0];
+                            v150 = v85[1];
+                            v138 = v85[2];
+
+                            v106 += 0.299000 * v149 + 0.587000 * v150 + 0.114000 * v138;
+                            v101 += 128 - 0.168736 * v149 - 0.331264 * v150 + 0.500000 * v138;
+                            v109 += 128 + 0.500000 * v149 - 0.418688 * v150 - 0.081312 * v138;
+                            v144++;
+
+                        }
+
+                    }
+                    v99[0][v132] = v106 / v144;
+                    v99[1][v132] = v101 / v144;
+                    v99[2][v132] = v109 / v144;
+                }
+                return [v55(v99[0]), v55(v99[1]), v55(v99[2])];
+            }
+
+
+            function v55(v123) {
+                var v93 = [];
+                var v145 = v123.length;
+                var v113 = 0;
+                var v112 = Number.POSITIVE_INFINITY;
+                var v141 = 0;
+                for (v141 = 0; v141 < v145; v141++) {
+                    if (v123[v141] > v113) {
+                        v113 = v123[v141];
+                    } else if (v123[v141] < v112) {
+                        v112 = v123[v141];
+                    }
+                }
+                var v122 = v113 - v112;
+                for (v141 = 0; v141 < v145; v141++) {
+                    v93[v141] = (v123[v141] - v112) * 255 / v122;
+                }
+                return v93;
+            }
+
+            function v50(v105) {
+                v75.v15 = $("#fast-option")[0].checked;
+                v75.v11 = 0;
+                clearTimeout(v75.v0);
+                $("#file-selector").hide();
+                v75.v105 = v105;
+                v75.v78 = v105[0].webkitRelativePath.split("/")[0];
+                v75.v53 = v105.length;
+                var v95 = 0;
+                var v103 = 0;
+                var v97 = new FileReader();
+                var v125 = new Image();
+                var v92 = document.createElement("canvas");
+                v92.width = v81.v117;
+                v92.height = v81.v117;
+                var v128 = v92.getContext("2d");
+                $(".flex-container-select-files").hide();
+                $(".fixed-top").show();
+                $(".view-list").click(v59);
+                $(".fixed-white-2").show();
+                v3();
+                v31(v95, v103, v97, v125, v128);
+            }
+            function v31(v95, v103, v97, v125, v128) {
+
+                if (v95 >= v75.v53) {
+                    v23(v95);
+                    return;
+                }
+
+                if (!v75.v28.test(v75.v105[v95].type) || v75.v105[v95].size > v75.v9) {
+                    v95++;
+                    v31(v95, v103, v97, v125, v128);
+                    return;
+                }
+
+                if (v75.v15 && v75.v105[v95].type == "image/jpeg" && !v75.v29) {
+
+                    v35(v97, v103, v75.v105[v95], function(v119) {
+
+                        if (v119 == null) {
+                            v75.v29 = true;
+                            v31(v95, v103, v97, v125, v128);
+                            return;
+
+                        } else {
+
+                            v125.src = URL.createObjectURL(v119);
+
+                            v125.onload = function() {
+
+                                v75.v20++;
+                                if (v95 < 5 || v95 % 5 === 0) {
+                                    v2(v95);
+                                }
+                                v128.drawImage(v125, 0, 0, v81.v117, v81.v117);
+                                v75.v47[v103] = v48(v128.getImageData(0, 0, v81.v117, v81.v117).data);
+                                v75.v80[v103] = v125.width;
+                                v75.v77[v103] = v125.height;
+
+                                v75.v38[v103] = v95;
+                                v75.v71 = v103 + 1;
+                                v75.v62 = v95 + 1;
+
+                                URL.revokeObjectURL(v125.src);
+                                v61(v103);
+                                v95++;
+                                v103++;
+                                if (!v75.v17) {
+                                    v75.v17 = true;
+                                }
+                                v75.v29 = false;
+                                v31(v95, v103, v97, v125, v128);
+                                return;
+                            }
+                            ;
+
+                            v125.onerror = function() {
+                                URL.revokeObjectURL(v125.src);
+                                v75.v29 = true;
+                                v31(v95, v103, v97, v125, v128);
+                                return;
+                            }
+                            ;
+
+                            return;
+                        }
+                    });
+
+                } else {
+                    v75.v29 = true;
+                }
+
+                if (v75.v29 == false) {
+                    return;
+                }
+
+                v97.readAsDataURL(v75.v105[v95]);
+
+                v97.onerror = function() {
+                    v95++;
+                    v75.v29 = false;
+                    v31(v95, v103, v97, v125, v128);
+                    return;
+                }
+                ;
+
+                v97.onload = function(evt) {
+                    v125.src = evt.target.result;
+
+                    v125.onerror = function() {
+                        v95++;
+                        v75.v29 = false;
+                        v31(v95, v103, v97, v125, v128);
+                        return;
+                    }
+                    ;
+
+                    v125.onload = function() {
+                        v75.v20++;
+                        if (v95 < 5 || v95 % 5 === 0) {
+                            v2(v95);
+                        }
+                        v128.drawImage(v125, 0, 0, v81.v117, v81.v117);
+                        v75.v47[v103] = v48(v128.getImageData(0, 0, v81.v117, v81.v117).data);
+                        v75.v80[v103] = v125.width;
+                        v75.v77[v103] = v125.height;
+
+                        v75.v38[v103] = v95;
+                        v75.v71 = v103 + 1;
+                        v75.v62 = v95 + 1;
+
+                        v61(v103);
+
+                        v95++;
+                        v103++;
+
+                        if (!v75.v17) {
+                            v75.v17 = true;
+                        }
+                        v75.v29 = false;
+                        v31(v95, v103, v97, v125, v128);
+                        return;
+                    }
+                    ;
+                }
+                ;
+            }
+        </script>
+    </body>
+</html>
