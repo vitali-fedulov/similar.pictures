@@ -57,7 +57,7 @@
 
   <p>In general, in each dimension, buckets can have variable widths. For example, if values come from interval (-Infinity, +Infinity), we could split this infinite space into finite K buckets with some kind of distribution reflecting the data (bell-curve or other). It might be good to analyze each dimension of your vectors to get the distribution curve, and split each axis so that each bucket contains approximately the same number of values.</p>
 
-  <p>Value distribution is important, but in the method below I assume that buckets have equal widths and that we consider a fixed interval of float values [min, max] per dimension. For example, [0.0, 300.0] cm is a safe interval to measure humans, and 10 cm could be the bucket width.</p>
+  <p>Value distribution is important, but in the method below I assume that buckets have equal widths and that we consider a fixed interval of float values [min, max] per dimension. For example, (0.0, 300.0) cm is a safe interval to measure humans, and 10 cm could be the bucket width.</p>
 
   <p>To be able to hash/compare a float value, we need its bucket number. But it is not sufficient to check that a float value falls into a specific bucket. What if it falls exactly at a bucket split point? Or one value falls near the split on one side, and another similar value falls on the other side? Besides, those values typically contain measurements errors. Therefore we will introduce an uncertainty neighbourhood of a value: (x-ɛ, x+ɛ).</p>
 
