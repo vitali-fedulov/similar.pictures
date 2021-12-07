@@ -53,7 +53,7 @@
 
   <p>Hash tables allow fast search. But not every value is suitable for hashing. For example how could you hash a person's height? There would be a near infinite number of hashes to find equal ones for comparison. Hashing a higher spaces is even more challenging.</p>
 
-  <p>Here I demonstrate a method to hash numerical Float values and other values of high density, such as Int, by using binary bucket trees. In the method each component of a vector is split into 1 or 2 buckets per dimension. Bucket numbers form hashes by appending them dimension by dimension.</p>
+  <p>Here I demonstrate a method to hash numerical Float values and other values of high density, such as Int, by using binary bucket trees. In the method each component of a vector is projected into 1 or 2 buckets per dimension. Bucket numbers form hashes by appending them sequentially dimension by dimension.</p>
 
   <p>In general, in each dimension, buckets can have variable widths. For example, if values come from interval (-Infinity, +Infinity), we could split this infinite space into finite K buckets with some kind of distribution reflecting the data (bell-curve or other). It might be good to analyze each dimension of your vectors to get the distribution curve, and split each axis so that each bucket contains approximately the same number of values.</p>
 
