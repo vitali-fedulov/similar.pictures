@@ -47,11 +47,9 @@
   <h3 id="2021-12-07">Float N-dimensional vector hashing</h3>  <!-- Id used for URL anchors.-->
     
 
-  <p>Here I explain how to hash float values for fast search/comparison.</p>
+  <p>The scope of the article is fast approximate vector comparison in N-dimensional spaces. A method to hash float vectors is presented. The method has been developed in the context of large scale image comparison.</p>
 
-  <p>The scope of the article is fast rough search of similar values in N-dimensional spaces.</p>
-
-  <p>Hash tables allow fast search. But not every value is suitable for hashing. For example how could you hash a person's height? There would be a near infinite number of hashes to find equal ones for comparison. Hashing a higher spaces is even more challenging.</p>
+  <p>Hash tables allow fast search. But not every value is suitable for hashing. For example how could you hash a person's height? There would be a near infinite number of hashes to find equal ones for comparison. Hashing in higher dimensions is even more challenging.</p>
 
   <p>Here I demonstrate a method to hash numerical Float values and other values of high density, such as Int, by using binary bucket trees. In the method each component of a vector is projected into 1 or 2 buckets per dimension. Bucket numbers form hashes by appending them sequentially dimension by dimension.</p>
 
