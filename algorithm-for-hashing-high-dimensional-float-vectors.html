@@ -124,7 +124,7 @@
   
   <p>Every hash is de-facto a hypercube for nearest-neighbour search/comparison. Two vectors with same hash are neighbours.</p>
 
-  <p>For database lookup, we do not need to store the whole set of hashes per N-vector. One value from the set is enough. But for lookups we need all hashes from the set. It is also possible to inverse the approach and store all hashes, while using only one for the lookup. Anyway, no "free lunch" here again.</p>
+  <p>For database lookup, we do not need to store the whole set of hashes per N-vector. One value from the set is enough. But, as a query, for the lookup we need all hashes from the set. It is also possible to inverse the approach and store all hashes of the vector, while using only one hash for the lookup query. Anyway, no "free lunch" here: one-to-many or many-to-one principle holds on search.</p>
   
 
     <h4>How the curse becomes a blessing</h4>
