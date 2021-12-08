@@ -136,11 +136,11 @@
   
   <p>If bucket width is large, the similarity approximation is rough, but is enough for initial grouping of similar vectors. After that, for higher precision, (slow) Euclidean distance can be used for vectors having same hash.</p>
   
-  <p>To increase precision we could also add additional dimensions N+1, N+2 etc. As a result even 2 buckets per dimension may be enough. Then the curse of dimensionality becomes a blessing: number of hypercubes will also grow fast. For example having only 4 buckets per dimension in 10-dimensional space will give us 4<sup>10</sup>> 1 million hashes. And for 8 buckets over 1 billion hashes.</p>
+  <p>To increase precision we could also add additional dimensions N+1, N+2 etc. As a result even 2 buckets per dimension may be enough. Then the curse of dimensionality becomes a blessing: number of hypercubes will grow fast to split N-space quite granularly. For example having only 4 buckets per dimension in 10-dimensional space will give us 4<sup>10</sup>> 1 million hashes. And for 8 buckets over 1 billion hashes.</p>
 
   <p>Another way to fight the curse of dimensionality is to split N-dimensional vector to smaller vectors, and generate hash sets for each sub-vector. Then later intersect lookup results for those sub-sets.</p>
   
-  <p>The demonstrated bucket approach will work best when vector components are independent variables. Besides buckets can be distributed in a non-linear fasion, if necessary.</p>
+  <p>The demonstrated bucket approach will work best when vector components are independent variables. Besides buckets can be distributed in a non-linear fashion, if necessary.</p>
   
 
   <h4>Algorithm implementation</h4>
