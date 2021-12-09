@@ -43,7 +43,8 @@
 
   <!-- Contents -->
 
-  <p class="published">fedulov.vitali@gmail.com, <time datetime="2021-12-07">7 Dec. 2021</time></p>
+  <p class="published">fedulov.vitali@gmail.com, <time datetime="2021-12-07">7 December 2021</time></p>
+  <p class="published">This is my original research. I have not used other sources to write this paper. Please treat it as such for references, provided you do not find an earlier similar research by others, which is possible. Sometimes solutions have to be rediscovered, because either papers are hard to find, or they are difficult to understand.</p>
   <h3 id="2021-12-07">Float N-dimensional vector hashing</h3>  <!-- Id used for URL anchors.-->
     
 
@@ -57,13 +58,13 @@
 
   <p>Value distribution is important, but in the method below I assume that buckets have equal widths and that we consider a fixed interval of float values [min, max] per dimension. For example, (0.0, 300.0) cm is a safe interval to measure humans, and 10 cm could be the bucket width.</p>
 
-  <p>To be able to hash/compare a float value, we need its bucket number. But it is not sufficient to check that a float value falls into a specific bucket. What if it falls exactly at a bucket split point? Or one value falls near the split on one side, and another similar value falls on the other side? Besides, those values typically contain measurements errors. Therefore we will introduce an uncertainty neighbourhood of a value: (x-ɛ, x+ɛ).</p>
+  <p>To be able to hash/compare a float value, we need its bucket number. But it is not sufficient to check that a float value falls into a specific bucket. What if it falls exactly at a bucket split point? Or one value falls near the split on one side, and another similar value falls on the other side? Besides, those values typically contain measurement errors. Therefore we will introduce an uncertainty neighbourhood of a value: (x-ɛ, x+ɛ).</p>
 
   <p>Let's start with 1-dimensional vector:</p>
 
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-01.gif" alt="1-dimensional buckets">
-    <figcaption>Bucket number of the left value is somewhat uncertain</figcaption>
+    <figcaption>The left point bucket number is uncertain</figcaption>
   </figure>
 
 
@@ -89,40 +90,40 @@
   
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-03.gif" alt="2-dimensional hypercubes">
-    <figcaption>Buckets for dimension x and y, their uncertainty intervals,<br>and corresponding 2-dimensional hypercubes</figcaption>
+    <figcaption>Buckets for 2 dimensions, value uncertainty intervals,<br>and corresponding hypercubes</figcaption>
   </figure>
 
   
-  <p>In N-space buckets are defined the same way as for one dimension, that is in relation to bucket borders. In 2 dimensions (figure above) buckets become vertical and horizontal stripes (the space between two parallel black lines). Corresponding uncertainty regions are also stripes (pink regions above). In 3D buckets become slices, and so on for higher dimensions.</p>
+  <p>In N-space buckets are defined the same way as for one dimension, that is in relation to bucket borders. In 2 dimensions (figure above) buckets are vertical and horizontal stripes between black lines. The uncertainty regions are colored pink. In 3D buckets become infinite slices, and so on for higher dimensions.</p>
 
-  <p>Bucket intersections form hypercubes, which correspond to the final hashes. The hashes (hypercubes) will be ultimately used to compare float vector values.</p>
+  <p><b>Method essence:</b> Bucket intersections form hypercubes, which correspond to the final hashes to be ultimately used to compare float vector values. The hashes are de-facto hypercube numbers.</p>
   
-  <p>As showed before, assuming that the bucket width is larger than 2ɛ, for one dimension we need 1-2 buckets. For 2D we will need 2-4 buckets (at least 1 and maximum 2 for each dimension). In 3D we can get 3-8 buckets. Those 8 buckets are total buckets in all the 3 dimensions.</p>
+  <p>Assuming that bucket width is larger than 2ɛ, for one dimension we will get 1-2 final hashes. For 2D we will get 1-4 hashes. For 3D we will get 1-8 hashes. And so on.</p>
     
-  <p>Below is shown the smallest number of buckets necessary in 2D case.</p>
+  <p>Below is shown the smallest number of buckets necessary in 2D case (one for each dimension), because each uncertainty interval falls inside one bucket.</p>
 
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-04.gif" alt="2-dimensional hypercubes">
     <figcaption>The case of minimal number of buckets necessary in 2D</figcaption>
   </figure>
   
-  <p>With each additional dimension the number of possible buckets will double. As a result, for N-dimensions there will be from N to 2<sup>N</sup> buckets overlayed by the 2ɛ intervals.</p>
+  <p>With each additional dimension the number of possible hypercubes will double. Therefore one N-dimensional vector will be represented by 1 to 2<sup>N</sup> final hashes.</p>
   
     <h4>How to construct hashes</h4>
     
   <p>Let's assume that one character of a hash is a bucket number, and that we have 10 buckets per dimension numbered from 0 to 9.</p>
   
-  <p>In 2D case, in the 1st dimension we will get 1 or 2 hashes, for example: [2] or [2, 3]. In the 2nd dimension: [7] or [7, 8]. Now, to create full hashes, we combine characters of the 1st and the 2nd dimensions in the dimension order, thus getting at minimum 1 array [2, 7], and at maximum 4 arrays [2, 7], [2, 8], [3, 7], [3, 8].</p>
-    
-  <p>Mutually appended elements of these arrays are the basis for full hashes in 2 dimensions: "27" at minimum, and "27", "28", "37", "38" at maximum.</p>
+  <p>In each dimension we always have 1 or 2 bucket numbers.</p>
+
+  <p>Let's consider a 2D case with some random bucket numbers. In the 1st dimension we have bucket number [2] or numbers [2, 3]. In the 2nd dimension [7] or [7, 8]. Now, to create full hashes, we append numbers of the 1st dimension to the numbers of the 2nd dimension, thus getting at minimum 1 hash: "27", and at maximum 4 hashes: "27", "28", "37", "38" (each to each number of the dimensions).</p>
+   
+  <p>Such binary tree approach allows to continue with additional dimensions to construct larger hashes for N-dimensional float vectors. The final hash length is always N. For every additional dimension we combine hashes from previous dimensions with the current one. To continue from the previous example, if in the 3rd dimension there is only one bucket 5, the final hashes at maximum will be "275", "285", "375", "385".</p>
   
-  <p>Such binary trees allow to continue with additional dimensions until full hashes are ready for one N-dimensional float vector. A single hash length is N.</p>
+  <p>Just to repeat: in the "most economic" case there will be only 1 hash in the final set, and in the worse case there will be 2<sup>N</sup> hashes. Such hash set represents one N-vector for search and comparison.</p>
   
-  <p>In the "most economic" case there will be only 1 hash, and in the worse case there will be 2<sup>N</sup> hashes. Those 2<sup>N</sup> or less hashes will form the final hash set we need. This hash set represents our N-vector for search and comparison.</p>
+    <h4>How to search and compare</h4>
   
-    <h4>How to search/compare</h4>
-  
-  <p>Every hash is de-facto a hypercube for nearest-neighbour search/comparison. Two vectors with same hash are neighbours.</p>
+  <p>Every hash is de-facto a hypercube for nearest-neighbour search or comparison. Two vectors with same hash(es) are equal or near equal.</p>
 
   <p>For database lookup, we do not need to store the whole set of hashes per N-vector. One value from the set is enough. But, as a query, for the lookup we need all hashes from the set. It is also possible to inverse the approach and store all hashes of the vector, while using only one hash for the lookup query. Anyway, no "free lunch" here: one-to-many or many-to-one principle holds on search.</p>
   
@@ -134,13 +135,13 @@
   
   <p>To address the problem, as already mentioned for 1D case, we can choose larger bucket widths. Assuming very large bucket width and reasonably small ɛ, there will be only few cases of our value being near bucket borders, therefore only a few branches of the binary tree will be necessary. As a result we will typically get small hash sets with a few rare exceptions.</p>
   
-  <p>If bucket width is large, the similarity approximation is rough, but is enough for initial grouping of similar vectors. After that, for higher precision, (slow) Euclidean distance can be used for vectors having same hash.</p>
+  <p>If bucket width is large, the similarity approximation is rough, but could be sufficient for initial grouping of similar vectors. After that Euclidean distance can be used to check for higher precision within the group. The Euclidean distance threshold can be set to ɛ.</p>
   
-  <p>To increase precision we could also add additional dimensions N+1, N+2 etc. As a result even 2 buckets per dimension may be enough. Then the curse of dimensionality becomes a blessing: number of hypercubes will grow fast to split N-space quite granularly. For example having only 4 buckets per dimension in 10-dimensional space will give us 4<sup>10</sup>> 1 million hashes. And for 8 buckets over 1 billion hashes.</p>
+  <p>To increase precision we could also add additional dimensions N+1, N+2 etc. As a result even the most basic dimension split into only 2 buckets may be enough. Then the curse of dimensionality becomes a blessing: number of hypercubes will grow fast and will discretize N-space quite granularly. For example having only 4 buckets per dimension in 10-dimensional space will give us 4<sup>10</sup>> 1 million hashes. And for 8 buckets over 1 billion hashes.</p>
 
   <p>Another way to fight the curse of dimensionality is to split N-dimensional vector to smaller vectors, and generate hash sets for each sub-vector. Then later intersect lookup results for those sub-sets.</p>
   
-  <p>The demonstrated bucket approach will work best when vector components are independent variables. Besides buckets can be distributed in a non-linear fashion, if necessary.</p>
+  <p>The demonstrated bucket approach will work best when vector components are independent variables.</p>
   
 
   <h4>Algorithm implementation</h4>
