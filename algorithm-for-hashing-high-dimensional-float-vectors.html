@@ -44,7 +44,7 @@
   <!-- Contents -->
 
   <p class="published">fedulov.vitali@gmail.com, <time datetime="2021-12-07">7 December 2021</time></p>
-  <p class="published">This is my original research. Please treat it as such for references, provided you do not find an earlier similar research by others, which is possible. Sometimes solutions have to be rediscovered, because either papers are hard to find, or they are difficult to understand.</p>
+
   <h3 id="2021-12-07">Float N-dimensional vector hashing</h3>  <!-- Id used for URL anchors.-->
     
 
@@ -125,7 +125,11 @@
   
   <p>Every hash is de-facto a hypercube for nearest-neighbour search or comparison. Two vectors with same hash(es) are equal or near equal.</p>
 
-  <p>For database lookup, we do not need to store the whole set of hashes per N-vector. One value from the set is enough. But, as a query, for the lookup we need all hashes from the set. It is also possible to inverse the approach and store all hashes of the vector, while using only one hash for the lookup query. Anyway, no "free lunch" here: one-to-many or many-to-one principle holds on search.</p>
+  <p>For hash lookup database, we do not need to store the whole set of hashes per N-vector. The only hash we need to store is the one corresponding to the central hypercube, which contains the value point.</p>
+  
+  <p>But for a query we need all hashes from a set. Thus the query hash (set) is "fuzzy" because of uncertainty, but a recorded value hash is not.</p>
+
+  <p>It should be possible to inverse the approach and store the whole hash set of the vector, while only using the central hash for a lookup query. Anyway, no "free lunch" here: one-to-many or many-to-one principle must hold on search.</p>
   
 
     <h4>How the curse becomes a blessing</h4>
@@ -144,11 +148,13 @@
   <p>The demonstrated bucket approach will work best when vector components are independent variables.</p>
   
 
-  <h4>Algorithm implementation</h4>
+  <h4>Algorithm code</h4>
 
-  <p>You can view and use my code written in Go language on Github: <a href="https://github.com/vitali-fedulov/hyper">float vector hash</a>.</p>
+  <p>Written in Golang <a href="https://github.com/vitali-fedulov/hyper">float vector hash (Github)</a>.</p>
 
+<br>
 
+  <p class="published">This is my original research. Please treat it as such for references, provided you do not find an earlier similar research by others, which is possible. Sometimes solutions have to be rediscovered, because either papers are hard to find, or they are difficult to understand.</p>
 
     
 
