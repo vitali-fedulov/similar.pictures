@@ -92,7 +92,7 @@
 
     <p><strong>Optimization 1:</strong> To increase precision of the algorithm, one may apply it on image sub-regions (instead of the whole image). If at least one region is not similar, images can be considered distinct.</p>
 
-    <p><strong>Optimization 2:</strong> Resizing a rectangular image to a square icon causes proportion changes and allows to preserve information from every region of the input image. Such resizing is optional. Instead it is possible to use excusively the central square area of the input image for comparison, thus discarding information outside the central square.</p>
+    <p><strong>Optimization 2:</strong> Resizing a rectangular image to a square icon causes proportion changes and allows to preserve information from every region of the input image. Such resizing is optional. Instead it is possible to use exclusively the central square area of the input image for comparison, thus discarding information outside the central square.</p>
 
     <p><strong>Optimization 3a:</strong> In addition to color values for icon generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within sub-regions. For example a photo of forest will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish between textures. The challenge is finding an optimal coefficient for perceptual significance of edge information vs. color information during comparison.</p>
   
