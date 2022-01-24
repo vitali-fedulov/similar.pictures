@@ -1,0 +1,123 @@
+<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2018 -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Algorithm for perceptual image comparison</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+</head>
+
+
+
+
+<body>
+
+  <!-- Header  -->
+  <div class="header">
+      <a href = "index.html" class="logo"><h1>Similar<span class="logo-dot">.</span>Pictures</h1></a>
+      <h4 class="logo-statement">Find near duplicates on your computer</h4>
+  </div>
+  
+  <div class="nav">
+      <!-- Set manually class "active" for corresponding nav-tab. -->
+      <div class="nav-tab"><a href="index.html">Home</a></div>
+      <div class="nav-tab"><a href="duplicate-image-search-example.html">Demo</a></div>
+      <div class="nav-tab active"><a href="research.html">Research</a></div>
+      <div class="nav-tab"><a href="tools.html">Tools</a></div>
+      <div class="nav-tab"><a href="about.html">About</a></div>
+      <div class="line"></div> <!-- Gray line placeholder. Should stay here. -->
+  </div>
+
+
+  <!-- Blog organization:
+    1. Home page navigation links to the latest blog-[date].html file. The pages must never
+       change file name/address, so if linked by other sites they stay constant.
+    2. Each blog page will later have a list of all articles linked by html injection,
+       e.g. secondary navigation menu. Place in upper part of the blog as TOC.
+  -->
+
+  <!-- Contents -->
+
+  <p class="published">fedulov.vitali@gmail.com, <time datetime="2019-11-18">18 November 2019</time></p>
+
+
+  <h3 id="2018-10-29">Algorithm for perceptual image comparison</h3>  <!-- Id used for URL anchors.-->
+    
+    <p>The image comparison algorithm I developed for the service makes use of perceptual similarity by performing the following set of operations:</p>
+
+
+    <h4>1. Mask generation</h4>
+
+    <p>A set of square masks is generated. A mask is a black square image with several white pixels aggregating locally. Such pixel groups are located in distinct positions from mask to mask. The white pixels define image sub-regions to calculate average color at each of the regions. Such color values will be used during comparison stage. Depending on implementation the number of masks is 300-500, and the mask size ranges from 8x8 to 24x24 pixels.</p>
+
+    <figure class="blog-img-1">
+      <img src="images/2018-10-29-image-masks-for-hash-generation.png" alt="masks for image comparison">
+    </figure>
+
+  
+    <h4>2. Image resizing</h4>
+    
+    <p>Input images are resized to the mask size. Resampling quality should be high enough in order to preserve near exact average colors in sub-regions of high-resolution input images. Low quality resampling would cause the algorithm to fail.</p>
+
+    <figure class="blog-img-1">
+      <img src="images/2018-10-29-image-resizing.png" alt="photo resizing for image clustering">
+    </figure>
+
+
+    <h4>3. Generating image hashes</h4>
+
+    <p>An image hash is an array of average color values defined by white pixels of separate masks superimposed over the resized image. Example hash: [23, 126, 77, ...], where the array length is equal to the number of masks. Each value in the array corresponds to an average color value corresponding to the location of white pixels in one mask. Black pixels of a mask are not used for calculations. Best results are achieved by mixing color channel values, so that each value corresponds to a different color channel in the following order within the hash: [red, green, blue, red, green, blue, ...].</p>
+
+
+    <figure class="blog-img-1">
+      <img src="images/2018-10-29-applying-mask-to-image.png" alt="similar image hash">
+    </figure>
+
+
+    <h4>4. Image size and hash comparison</h4>
+
+    <p>An input to this operation is a pair of image hashes and original image sizes. Image sizes are used as a first step to quickly eliminate possible mismatch. If image proportions are considerably different, images are considered non-similar, so no further checks are performed.</p>
+    
+    <p>In the next step two image hashes are compared by Euclidean distance. If the distance is larger than a certain threshold, images are considered non-similar. This comparison is done for both original and min-max-normalized hashes.</p>
+
+    <p>In the last step the hashes are cross-checked by brightness change sign, because similar pictures have closely correlated brightness changes between their sub-regions. This is the final step of the comparison procedure.</p>
+
+    <p>Image pairs that passed all the three filters above are similar (with high probability).</p>
+    
+    <h4>Possible optimizations</h4>
+
+    <p><strong>Optimization 1:</strong> To increase precision of the algorithm, one may apply it on image sub-regions (instead of the whole image). When majority of sub-regions are found to be similar, the images are likely to be similar.</p>
+
+    <p><strong>Optimization 2:</strong> Surprisingly robust results were achieved when using exclusively the brightness correlation filter (as in part 4 above) performed on each-to-each sub-region. In fact, an additional similarity-dimension can be added to identify image pairs of large brightness/exposure differences. For example two photos of same subject: one underexposed, another normally exposed. Unfortunately such method is very slow compared to the Euclidean distance test. To accelerate the main algorithm such comparison is only done for adjacent hash values.</p>
+
+    <p><strong>Optimization 3:</strong> If searching for very similar images, e.g. strictly resized images, one can modify threshold coefficients; alternatively increase mask size. In general, assuming same size of white sub-regions of the masks, smaller masks allow better generalization, e.g. comparing overall color/brightness distribution over the images. But such approach will also generate more false positives.</p>
+
+    <p><strong>Optimization 4:</strong> Resizing input images to a square mask causes proportion changes for non-square images and allows to preserve information from every region of an image. Such resizing is optional. Instead it is possible to use/resize only the central square area of the input image for comparison, thus discarding information outside the central square. This should not cause considerable loss in comparison precision.</p>
+
+    <p><strong>Optimization 5a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding the optimal coefficient for perceptual significance of edge information vs. color information during the comparison.</p>
+  
+    <p><strong>Optimization 5b:</strong> Instead of summation of colors within mask sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
+    
+    <p><strong>Optimization 6:</strong> In the algorithm mask sub-regions form small near circular areas. Instead it is possible to use more complex subject-specific shapes. E.g. face-like masks to detect faces. The mask summation regions can also have gray-scale values instead of being pure white.</p>
+
+    <h4>Algorithm code</h4>
+
+    <p>Written in Golang <a href="https://github.com/vitali-fedulov/images">image comparison (Github)</a>.</p>
+
+
+<br>
+
+<p class="published">This is my original research. Please treat it as such for references, provided you do not find an earlier similar research by others, which is possible. Sometimes solutions have to be rediscovered, because either papers are hard to find, or they are difficult to understand.</p>
+    
+
+
+  <div class = "footer">Copyright &#169; 2015-2019 Vitali Fedulov. All rights reserved.</div>
+  
+</body>
+</html>
+

@@ -202,7 +202,6 @@ figure {
 	margin-left: auto;
 	margin-right: auto;
     text-align: center;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 figcaption {
@@ -213,8 +212,12 @@ figcaption {
 }
 
 .blog-img-1 {
-    padding: 30px 0px 15px 0px;
+    padding: 10px 0px 7px 0px;
     width: 550px;
+}
+
+.blog-img-2022 {
+    padding: 2px 0px 7px 0px;
 }
 
 .footer {

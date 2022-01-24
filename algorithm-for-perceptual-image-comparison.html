@@ -43,73 +43,64 @@
 
   <!-- Contents -->
 
-  <p class="published">fedulov.vitali@gmail.com, <time datetime="2019-11-18">18 November 2019</time></p>
+  <p class="published">fedulov.vitali@gmail.com, <time datetime="2022-01-24">24 January 2022</time></p>
 
 
   <h3 id="2018-10-29">Algorithm for perceptual image comparison</h3>  <!-- Id used for URL anchors.-->
     
-    <p>The image comparison algorithm I developed for the service makes use of perceptual similarity by performing the following set of operations:</p>
+    <p>The image comparison algorithm I developed for the service makes use of perceptual similarity by performing the following set of operations. To understand how the idea evolved, check <a href="algorithm-old-for-perceptual-image-comparison.html" target="_blank">previous version of the algorithm</a>.</p>
 
+    <h4>1. Image resizing</h4>
 
-    <h4>1. Mask generation</h4>
+    <p>Source images are resized to square images ("icons") of 23x23 pixels. The resizing is done in such a way that color relationships between original image sub-regions are carefully preserved by using high precision values, unlike in common graphic editors. Specifically: float values are used instead of uint8 and pixel values are sampled with high density.</p>
 
-    <p>A set of square masks is generated. A mask is a black square image with several white pixels aggregating locally. Such pixel groups are located in distinct positions from mask to mask. The white pixels define image sub-regions to calculate average color at each of the regions. Such color values will be used during comparison stage. Depending on implementation the number of masks is 300-500, and the mask size ranges from 8x8 to 24x24 pixels.</p>
-
-    <figure class="blog-img-1">
-      <img src="images/2018-10-29-image-masks-for-hash-generation.png" alt="masks for image comparison">
-      <figcaption>Example of 16x16 masks with one of them shown at larger scale</figcaption>
+    <figure class="blog-img-2022">
+      <img src="images/2022-image-resizing.png" alt="image resizing">
     </figure>
 
-    <p>In the latest implementation, instead of having random shapes, the white sub-regions have regular 3x3 shape.</p>
+    <h4>2. Box blur</h4>
 
-    <h4>2. Image resizing</h4>
-    
-    <p>Input images are resized to the mask size. Resampling quality should be high enough in order to preserve near exact average colors in sub-regions of high-resolution input images. Low quality resampling would cause the algorithm to fail.</p>
+    <p>Box blur filter of 3x3 is taken at every 2nd row/column. The final icon size is 11x11.</p>
 
-    <figure class="blog-img-1">
-      <img src="images/2018-10-29-image-resizing.png" alt="photo resizing for image clustering">
-      <figcaption>Input images are resized to the mask size</figcaption>
+    <figure class="blog-img-2022">
+      <img src="images/2022-box-blur.png" alt="box blur">
     </figure>
 
+    <h4>3. Color space modification</h4>
+    
+    <p>RGB color space of the icon is transformed into YCbCr to give more importance to luma vs chroma components. This step is optional, but works well for cases when a colored and grayscale versions of the same image are compared.</p>
 
-    <h4>3. Generating image hashes</h4>
+    <h4>4. Histogram normalization</h4>
+    
+    <p>This operation stretches histograms for each color channel of the icon so that [min, max] value range becomes [0.0, 255.0]. This increases the range of pixel values (and increases icon contrast). This step is optional, depending on similarity aspects: but usually same images of different contrast can be considered similar.</p>
 
-    <p>An image hash is an array of average color values defined by white pixels of separate masks superimposed over the resized image. Example hash: [23, 126, 77, ...], where the array length is equal to the number of masks. Each value in the array corresponds to an average color value corresponding to the location of white pixels in one mask. Black pixels of a mask are not used for calculations. Best results are achieved by mixing color channel values, so that each value corresponds to a different color channel in the following order within the hash: [red, green, blue, red, green, blue, ...].</p>
-
-
-    <figure class="blog-img-1">
-      <img src="images/2018-10-29-applying-mask-to-image.png" alt="similar image hash">
-      <figcaption>Calculating hash sub-value (average color in white-pixel area of the mask)</figcaption>
+    <figure class="blog-img-2022">
+      <img src="images/2022-normalization.png" alt="masks for image comparison">
     </figure>
 
+    <h4>5. Image comparision (final step)</h4>
 
-    <h4>4. Image size and hash comparison</h4>
-
-    <p>An input to this operation is a pair of image hashes and original image sizes. Image sizes are used as a first step to quickly eliminate possible mismatch. If image proportions are considerably different, images are considered non-similar, so no further checks are performed.</p>
+    <p>The input to this operation is a pair of icons from step (4) and original image sizes.</p>
+  
+    <p>Image sizes are used as a first step to quickly eliminate possible mismatch. If image proportions are considerably different, images are considered non-similar, so no further checks are performed.</p>
     
-    <p>In the next step two image hashes are compared by Euclidean distance. If the distance is larger than a certain threshold, images are considered non-similar. This comparison is done for both original and min-max-normalized hashes.</p>
-
-    <p>In the last step the hashes are cross-checked by brightness change sign, because similar pictures have closely correlated brightness changes between their sub-regions. This is the final step of the comparison procedure.</p>
-
-    <p>Image pairs that passed all the three filters above are similar (with high probability).</p>
+    <p>Then the two icons are compared by Euclidean distance. If the distance is larger than a certain threshold, images are considered non-similar.</p>
     
+    <br>
+
     <h4>Possible optimizations</h4>
 
-    <p><strong>Optimization 1:</strong> To increase precision of the algorithm, one may apply it on image sub-regions (instead of the whole image). When majority of sub-regions are found to be similar, the images are likely to be similar.</p>
+    <p><strong>Optimization 1:</strong> To increase precision of the algorithm, one may apply it on image sub-regions (instead of the whole image). If at least one region is not similar, images can be considered distinct.</p>
 
-    <p><strong>Optimization 2:</strong> Surprisingly robust results were achieved when using exclusively the brightness correlation filter (as in part 4 above) performed on each-to-each sub-region. In fact, an additional similarity-dimension can be added to identify image pairs of large brightness/exposure differences. For example two photos of same subject: one underexposed, another normally exposed. Unfortunately such method is very slow compared to the Euclidean distance test. To accelerate the main algorithm such comparison is only done for adjacent hash values.</p>
+    <p><strong>Optimization 2:</strong> Resizing a rectangular image to a square icon causes proportion changes and allows to preserve information from every region of the input image. Such resizing is optional. Instead it is possible to use excusively the central square area of the input image for comparison, thus discarding information outside the central square.</p>
 
-    <p><strong>Optimization 3:</strong> If searching for very similar images, e.g. strictly resized images, one can modify threshold coefficients; alternatively increase mask size. In general, assuming same size of white sub-regions of the masks, smaller masks allow better generalization, e.g. comparing overall color/brightness distribution over the images. But such approach will also generate more false positives.</p>
-
-    <p><strong>Optimization 4:</strong> Resizing input images to a square mask causes proportion changes for non-square images and allows to preserve information from every region of an image. Such resizing is optional. Instead it is possible to use/resize only the central square area of the input image for comparison, thus discarding information outside the central square. This should not cause considerable loss in comparison precision.</p>
-
-    <p><strong>Optimization 5a:</strong> In addition to color values for hash generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within mask sub-regions. For example a forest photo will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish textures. The challenge is finding the optimal coefficient for perceptual significance of edge information vs. color information during the comparison.</p>
+    <p><strong>Optimization 3a:</strong> In addition to color values for icon generation it is also possible to use filter-based values, e.g. by passing an image through an edge detector. This allows to count additional visual signals within sub-regions. For example a photo of forest will have distinct edge values compared to some smooth background of the same color (because trees have leaves, thus many edges). Such approach allows to distinguish between textures. The challenge is finding an optimal coefficient for perceptual significance of edge information vs. color information during comparison.</p>
   
-    <p><strong>Optimization 5b:</strong> Instead of summation of colors within mask sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
-    
-    <p><strong>Optimization 6:</strong> In the algorithm mask sub-regions form small near circular areas. Instead it is possible to use more complex subject-specific shapes. E.g. face-like masks to detect faces. The mask summation regions can also have gray-scale values instead of being pure white.</p>
+    <p><strong>Optimization 3b:</strong> Instead of summation of colors within icon sub-regions, it is possible to sum over features extracted with convolutional neural network filter layers.</p>
 
-    <h4>Algorithm code</h4>
+    <p><strong>Optimization 4:</strong> When the number of images is very large (more than millions), using Euclidean metric for search might be slow. It is possible to use hash tables as a preliminary step before checking Euclidean distance. For that a certain number of sample points from the icon can be taken and then a <a href="algorithm-for-hashing-high-dimensional-float-vectors.html" target="_blank">hashing algorithm for floating point vectors</a> can be applied to the sample vector.</p>
+    
+    <h4>Algorithm implementation</h4>
 
     <p>Written in Golang <a href="https://github.com/vitali-fedulov/images3">image comparison (Github)</a>.</p>
 
@@ -120,7 +111,7 @@
     
 
 
-  <div class = "footer">Copyright &#169; 2015-2019 Vitali Fedulov. All rights reserved.</div>
+  <div class = "footer">Copyright &#169; 2022 Vitali Fedulov. All rights reserved.</div>
   
 </body>
 </html>

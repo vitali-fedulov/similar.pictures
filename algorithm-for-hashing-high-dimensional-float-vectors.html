@@ -60,24 +60,22 @@
 
   <p>To be able to hash/compare a float value, we need its bucket number. But it is not sufficient to check that a float value falls into a specific bucket. What if it falls exactly at a bucket split point? Or one value falls near the split on one side, and another similar value falls on the other side? Besides, those values typically contain measurement errors. Therefore we will introduce an uncertainty neighbourhood of a value: (x-ɛ, x+ɛ).</p>
 
-  <p>Let's start with 1-dimensional vector:</p>
+  <p>Let's start with 1-dimensional vector (figure below). The bucket number for the left point is uncertain:</p>
 
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-01.gif" alt="1-dimensional buckets">
-    <figcaption>The left point bucket number is uncertain</figcaption>
   </figure>
 
 
 
-  <p>If a float value falls near the center of a bucket, we would feel safe to allocate a single bucket for this value. But if the value finds itself near the bucket border, as in the picture above, the nearby bucket should also be included. By introducing a neighbourhood interval around the float value, we will get more than one bucket corresponding to such value:</p>
+  <p>If a float value falls near the center of a bucket, we would feel safe to allocate a single bucket for this value. But if the value finds itself near the bucket border, as in the picture above, the nearby bucket should also be included. By introducing the uncertainty interval of different sizes around the float value, we will get more than one bucket corresponding to such value:</p>
 
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-02.gif" alt="1-dimensional buckets with uncertainty interval">
-    <figcaption>Introducing the uncertainty interval of different sizes</figcaption>
   </figure>
 
 
-  <p>In the 1st case above 2 buckets are "activated" by the uncertainty interval. Therefore 2 bucket numbers will be necessary to represent one value.</p>
+  <p>In the 1st case of the figure above 2 buckets are "activated" by the uncertainty interval. Therefore 2 bucket numbers will be necessary to represent one value.</p>
 
   <p>In the 2nd case, the epsilon interval covers many buckets to represent one float value. This is impractical. An ideal bucket width must be larger than 2ɛ. Then a float value will fall into maximum 2 buckets. There is no "free lunch" to have all values in 1 bucket only - some will luckily do, but some will require 2 buckets. This is the price to be able to compare values, as explained above.</p>
 
@@ -86,7 +84,7 @@
 
   <p>As showed above, the uncertainty requires 2 buckets "reserved" in 1-dimensional space. If bucket width is much larger than ɛ, there will be few values with their uncertainty intervals overlaying 2 buckets, because probability of a value to be near a bucket border will be smaller. In such configuration most values will require only 1 bucket number to be correctly represented.</p>
   
-  <p>Now, let's consider higher dimensional space.</p>
+  <p>Now, let's consider higher dimensional space:</p>
   
   <figure class="blog-img-1">
     <img src="images/21.12.07-buckets-03.gif" alt="2-dimensional hypercubes">
