@@ -7,4 +7,3 @@ https://www.similar.pictures/similar-image-search.html
 https://www.similar.pictures/duplicate-image-finder.html
 https://www.similar.pictures/algorithm-for-perceptual-image-comparison.html
 https://www.similar.pictures/algorithm-for-hashing-high-dimensional-float-vectors.html
-https://www.similar.pictures/research-external.html
