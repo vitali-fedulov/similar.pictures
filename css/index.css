@@ -46,7 +46,7 @@ h1 {
 	font-weight: bold;
 	letter-spacing: 0.1em;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	font-size: 36px;
+	font-size: 28px;
     margin-top: 20px;
     margin-bottom: 6px;
 }
@@ -75,10 +75,10 @@ h4 {
 .logo:active {
     text-decoration: none;
 }
-.logo-dot {
+/* .logo-dot {
 	font-family: 'Roboto', serif;
 	color: red;
-}
+} */
 .logo-statement {
 	color: #333;
 	font-size: 18px;
