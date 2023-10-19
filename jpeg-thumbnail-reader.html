@@ -1,365 +1,406 @@
-<!-- Copyright by Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2019 -->
+<!-- Copyright: Vitali Fedulov (fedulov.vitali@gmail.com) 2015-2023 -->
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>JPEG embedded thumbnail reader</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="js/jquery.min.js"></script>
-        <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
-        <link rel="icon" type="image/png" href="images/favicon.png">
-        <link rel="stylesheet" type="text/css" href="css/clustering.css">
-    </head>
-    <body>
-        <div class="flex-container-select-files">
-            <div class="flex-center-horizontally">
-                <div>
-                    <h2 class="text-centered clustering-title">JPEG Embedded Thumbnail Reader</h2>
-                </div>
-                <div id="terms-of-service">
-                    <p class="terms-of-service-header text-centered">Terms of service and data protection</p>
-                    <div id="terms"></div>
-                </div>
-                <div>
-                    <p id="messages" class="hidden">Messages</p>
-                    <div id="ok-button" class="text-centered">
-                        <div class="button">OK</div>
-                    </div>
-                    <div id="file-selector" class="text-centered">
-                        <input class="hidden" type="file" id="filesSelected" webkitdirectory multiple accept="image/*" onchange="v31(this.files)" onclick="v9()">
-                        <a class="button">Select a folder with images</a>
-                    </div>
-                    <div class="link-block text-centered">
-                        <a class="home-cancel-link" id="cancel-link" onclick="v30()">Cancel</a>
-                        <a class="home-cancel-link" href="index.html">Home</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="fixed-top hidden">
-            <div class="fixed-top-gray">
-                <a href="index.html" class="myhref">
-                    <span class="logo">
-                        Similar<span class="logo-dot">.</span>Pictures
-                    </span>
-                </a>
-                <div class="button button-new-search">New read</div>
-            </div>
-            <div class="fixed-white-1">
-                <div class="progress">
-                    <div id="progress-bar"></div>
-                </div>
-                <div class="progress-text"></div>
-            </div>
-            <div class="fixed-white-2 hidden">
-                <span class="found-clusters"></span>
-                <span>(</span>
-                <span class="view-list">show/hide as list</span>
-                <span>)</span>
-                <textarea class="textarea"></textarea>
-                <p class="explanation">
-                    <small class="small">Scroll down to view all thumbnails.</small>
-                </p>
-            </div>
-        </div>
-        <div id="clusters" class="clusters"></div>
-        <script>
-            $(document).ready(function() {
-                $("#terms").load("tos_en.html");
-                $("#ok-button").hide();
-                $("#cancel-link").hide();
-                $(".button-new-search").click(v40);
-                $("#ok-button").click(v40);
-            });
+<head>
 
-            var v44 = {
 
-                v29: 80000,
-                v5: 50 * 1024 * 1024,
-                v43: 0,
-                v39: 0,
-                v13: Date.now(),
+ 
+<script async src="//www.googletagmanager.com/gtag/js?id=G-2JHEHHKWBJ"></script>
+<script>
+ window.dataLayer = window.dataLayer || [];
+ function gtag(){dataLayer.push(arguments);}
+ gtag('js', new Date());
 
-                v32: 0,
+ gtag('config', 'G-2JHEHHKWBJ');
+</script>
 
-                v27: [],
-                v48: "image/jpeg",
-                v45: "",
-                v23: (function() {
-                    var v12 = new Uint32Array(10);
-                    window.crypto.getRandomValues(v12);
-                    var v25 = "";
-                    for (var i = 0; i < v12.length; i++) {
-                        v25 += v12[i].toString(36);
-                    }
-                    return v25
-                }
-                )(),
 
-                v58: null,
-                v38: 0,
+ <title>JPEG embedded thumbnail reader</title>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto">
+ <link rel="icon" type="image/png" href="images/favicon.png">
+ <link rel="stylesheet" type="text/css" href="css/clustering.css">
+</head>
 
-                v1: 1000,
-                v0: null,
-                v22: '\n',
-                v11: 0,
-                v10: false,
-                v7: 0,
-            };
 
-            function v4() {
-                return Math.floor((Date.now() - v44.v13) / 1000);
-            }
+<body>
 
-            function v30() {
-                v40();
-            }
+ 
 
-            function v40() {
-                location.reload();
-                $(document).ready(function() {
-                    $(this).scrollTop(0);
-                });
-            }
 
-            var v26 = document.getElementById('file-selector');
-            v26.addEventListener('click', v19);
+ <div class="flex-container-select-files">
+ <div class="flex-center-horizontally">
+ <div>
+ <h2 class="text-centered clustering-title">JPEG Embedded Thumbnail Reader</h2>
+ </div>
 
-            function v19() {
-                var v61 = document.getElementById('filesSelected');
-                if (!!v61.webkitdirectory == false) {
-                    alert('This browser does not support folder selection. Please try latest Chrome, Firefox or Edge.');
-                    return;
-                }
-                v61.click();
-            }
+ <div id="terms-of-service">
+ <p class="terms-of-service-header text-centered">Terms of service and data protection</p>
+ 
+ <div id="terms"></div>
+ </div>
 
-            function v24(v57, v56, v47) {
-                var v54 = new FileReader();
-                v54.readAsArrayBuffer(v44.v58[v56].slice(0, v44.v29));
-                v54.onload = function(v60) {
-                    var v62 = new Uint8Array(v60.target.result), v59, v69;
-                    for (var v71 = 2; v71 < v62.length; v71++) {
-                        if (v62[v71] == 0xFF) {
-                            if (!v59) {
-                                if (v62[v71 + 1] == 0xD8) {
-                                    v59 = v71;
-                                }
-                            } else {
-                                if (v62[v71 + 1] == 0xD9) {
-                                    v69 = v71 + 2;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (v59 && v69) {
-                        v47(new Blob([v62.subarray(v59, v69)],{
-                            type: v44.v48
-                        }));
-                    } else {
-                        v47(null);
-                    }
-                }
-                ;
+ <div>
 
-                v54.onerror = function() {
-                    v47(null);
-                }
-                ;
-            }
+ <p id="messages" class="hidden">Messages</p>
 
-            function v17(v56) {
-                if (v44.v11 == 0) {
-                    $(".fixed-top").hide();
-                    $(".flex-container-select-files").show();
-                    $("#messages").text("No images with embedded thumbnails found. Please select a different folder.");
-                    $("#messages").show();
-                    $("#file-selector").hide();
-                    $("#cancel-link").hide();
-                    $("#ok-button").show();
-                    return;
-                }
-                $(".progress")[0].remove();
-                var v70 = "s";
-                if (v56 + 1 == 1) {
-                    v70 = "";
-                }
-                v8(".progress-text", "Successfully scanned ".concat(v44.v58.length, " file", v70, "."));
-                if (v44.v32 == 0) {
-                    v8(".progress-text", "Zero thumbnails found from the successfully scanned ".concat(v44.v58.length, " file", v70, "."));
-                }
-                return;
-            }
+ <div id="ok-button" class="text-centered">
+ <div class="button">OK</div>
+ </div>
 
-            function v8(v15, v67) {
-                $(v15)[0].textContent = v67;
-            }
+ <div id="file-selector" class="text-centered">
+ <input class="hidden" type="file" id="filesSelected" webkitdirectory multiple accept="image/*" onchange="v30(this.files)" onclick="v10()">
+ <a class="button">Select a folder with images</a>
+ </div>
 
-            function v3() {
-                var v70 = "s";
-                if (v44.v32 == 1) {
-                    v70 = "";
-                }
-                v8(".found-clusters", "Found ".concat(v44.v32, ' embedded thumbnail', v70));
-            }
+ <div class="link-block text-centered">
+ <a class="home-cancel-link" id="cancel-link" onclick="v33()">Cancel</a>
+ <a class="home-cancel-link" href="/">Home</a>
+ </div>
 
-            function v2(v56) {
-                if (v56 + 1 == v44.v38) {
-                    return;
-                }
-                v8(".progress-text", "Please wait... Reading ".concat(v56, ' from ', v44.v38, ' selected files.'));
-                var v49 = Math.floor(100 * (v56 + 1) / v44.v38);
-                if (v49 < 5) {
-                    v49 = 5;
-                }
-                var v46 = "".concat(v49, "%");
-                $("#progress-bar").width(v46);
-            }
-            function v51(v33, v21) {
-                var v66 = document.createElement("div");
-                v66.className = v33;
-                v21.appendChild(v66);
-                return v66;
-            }
+ </div>
 
-            var v28 = document.getElementById("clusters");
+ </div>
+ 
+ </div> 
+ 
+ 
 
-            function v6(v41) {
-                var v36 = v51("cluster", v28);
-                var v42 = v51("cluster-num", v36);
-                v42.textContent = v41;
-                var v18 = v51("cluster-content", v36);
-                v51("cluster-imgs", v18);
-                v51("cluster-paths", v18);
-            }
+ 
 
-            function v14(v41, v57, v68) {
-                var v50 = $(".cluster-imgs")[v41];
-                var v55 = v51("cluster-img-div", v50);
-                v68.classList.add("cluster-img");
-                v55.appendChild(v68);
-                var v37 = v51("image-size", v55);
-                v37.textContent = "".concat(v68.width, "×", v68.height);
-                var v16 = $(".cluster-paths")[v41];
-                var v34 = v51("img-path", v16);
-                var v65 = v44.v58[v44.v27[v57]];
-                v34.textContent = v65.webkitRelativePath;
-                v44.v7++;
-            }
 
-            function v35() {
-                var v64 = "";
-                var v53 = $(".img-path");
-                for (v72 = 0; v72 < v53.length; v72++) {
-                    var v52 = v53[v72].textContent;
-                    v64 = v64.concat(v52, v44.v22);
-                }
-                v64 = v64.slice(0, -1);
-                $(".textarea").val(v64);
-                $(".textarea").toggleClass("textareaon");
-            }
+ <div class="fixed-top hidden">
 
-            function v9() {
-                $("#terms-of-service").hide();
-                $(".text-left").hide();
-                $(".vertical-center-row").toggleClass("vertical-center-narrow");
-                v44.v0 = setTimeout(function() {
-                    $("#messages").text('Please wait if you selected a very large number of images: it may take tens of seconds before the reading starts.');
-                    $("#messages").show();
-                    $("#file-selector").hide();
-                    $("#fast").hide();
-                    $("#cancel-link").show();
-                }, v44.v1);
-            }
+ <div class="fixed-top-gray">
+ <a href = "index.html" class="logo-href"><span class="logo">JPEG Embedded Thumbnail Reader</a>
+ <div class="button button-new-search">New read</div>
+ </div>
 
-            function v31(v58) {
-                v44.v7 = 0;
-                clearTimeout(v44.v0);
-                $("#file-selector").hide();
-                v44.v58 = v58;
-                v44.v45 = v58[0].webkitRelativePath.split("/")[0];
-                v44.v38 = v58.length;
-                var v56 = 0;
-                var v57 = 0;
-                $(".flex-container-select-files").hide();
-                $(".fixed-top").show();
-                $(".view-list").click(v35);
-                $(".fixed-white-2").show();
-                v3();
-                v20(v56, v57);
-            }
-            function v20(v56, v57) {
+ <div class="fixed-white-1">
+ <div class="progress">
+ <div id="progress-bar"></div>
+ </div>
+ <div class="progress-text"></div>
+ </div>
 
-                if (v56 >= v44.v38) {
-                    v17(v56);
-                    return;
-                }
+ <div class="fixed-white-2 hidden">
+ <span class="found-clusters"></span> <span> (</span><span class="view-list">show/hide as list</span><span>)</span>
+ <textarea class="textarea"></textarea>
+ <p class="explanation">
+ <small class="small">Scroll down to view all thumbnails.</small>
+ </p>
+ </div>
 
-                if (v56 < 5 || v56 % 5 === 0) {
-                    v2(v56);
-                }
+ </div>
+ 
+ <div id="clusters" class="clusters"></div>
+ 
 
-                if (!v44.v48 == v44.v58[v56].type || v44.v58[v56].size > v44.v5) {
-                    v56++;
-                    v20(v56, v57);
-                    return;
-                }
 
-                v44.v43 = v57 + 1;
+<script>
 
-                v24(v57, v56, function(v63) {
+function load(url, element) {
+ fetch(url)
+ .then(response => response.text())
+ .then(data => {
+ element.innerHTML = data;
+ })
+ .catch(error => {
+ console.error('Error:', error);
+ });
+}
+window.addEventListener('DOMContentLoaded', () => {
+ load("tos_en.html", document.querySelector("#terms"));
+ document.querySelector("#ok-button").style.display = 'none';
+ document.querySelector("#cancel-link").style.display = 'none';
+ document.querySelector(".button-new-search").addEventListener('click', (e) => {
+ v41();
+ });
+ document.querySelector("#ok-button").addEventListener('click', (e) => {
+ v41();
+ });
+ window.scrollTo({top: 0});
+});
 
-                    if (v63 == null) {
-                        v56++;
-                        v57++;
-                        v20(v56, v57);
-                        return;
+var v51 = {
 
-                    } else {
+ v29 : 80000, v5 : 50*1024*1024, v46 : 0, v40 : 0, v13 : Date.now(),
 
-                        var v68 = new Image();
+ v34 : 0,
 
-                        v68.onload = function() {
+ v27 : [], v49 : "image/jpeg",
+ v48 : "",
+ v24 : (function () {
+ var v12 = new Uint32Array(10); window.crypto.getRandomValues(v12);
+ var v28 = "";
+ for (var i = 0; i < v12.length; i++) {
+ v28 += v12[i].toString(36); }
+ return v28
+ }) (),
 
-                            v44.v11++;
+ v61 : null,
+ v39 : 0,
 
-                            v44.v27[v57] = v56;
-                            v44.v39 = v56 + 1;
+ v1 : 1000,
+ v0 : null,
+ v23 : '\n',
+ v11 : 0,
+ v8 : false,
+ v7 : 0,
+};
 
-                            v44.v32++;
-                            v6(v44.v32);
-                            v14(v44.v32 - 1, v57, v68);
 
-                            v56++;
-                            v57++;
-                            if (!v44.v10) {
-                                v44.v10 = true;
-                            }
+function v4() { return Math.floor((Date.now() - v51.v13) / 1000);
+}
 
-                            URL.revokeObjectURL(v68.src);
-                            v3();
-                            v20(v56, v57);
-                            return;
-                        }
-                        ;
 
-                        v68.onerror = function() {
-                            URL.revokeObjectURL(v68.src);
-                            v56++;
-                            v57++;
-                            v20(v56, v57);
-                            return;
-                        }
-                        ;
+function v33() {
+ v41();
+}
 
-                        v68.src = URL.createObjectURL(v63);
 
-                        return;
-                    }
-                });
-            }
-        </script>
-    </body>
+function v41() {
+ location.reload();
+ window.scrollTo({top: 0});
+}
+
+
+var v26 = document.getElementById('file-selector');
+v26.addEventListener('click', v19);
+
+
+function v19() {
+ var v64 = document.getElementById('filesSelected');
+ if (!!v64.webkitdirectory == false) {
+ alert('This browser does not support folder selection. Please try latest Chrome, Firefox or Edge.');
+ return;
+ }
+ v64.click();
+}
+
+
+function v25(v63, v58, v47) {
+ var v57 = new FileReader();
+ v57.readAsArrayBuffer(v51.v61[v58].slice(0, v51.v29));
+ v57.onload = function (v62) {
+ var v60 = new Uint8Array(v62.target.result),
+ v65, v72;
+ for (var v74 = 2; v74 < v60.length; v74++) {
+ if (v60[v74] == 0xFF) {
+ if (!v65) {
+ if (v60[v74 + 1] == 0xD8) {
+ v65 = v74;
+ }
+ } else {
+ if (v60[v74 + 1] == 0xD9) {
+ v72 = v74 + 2; break;
+ }
+ }
+ }
+ }
+ if (v65 && v72) {
+ v47(new Blob([v60.subarray(v65, v72)], {type:v51.v49}));
+ } else {
+ v47(null);
+ }
+ };
+
+ v57.onerror = function() {
+ v47(null);
+ };
+}
+
+
+function v17(v58) {
+ if (v51.v11 == 0) {
+ document.querySelector(".fixed-top").style.display = 'none';
+ document.querySelector(".flex-container-select-files").style.display = 'block';
+ document.querySelector("#messages").textContent = "No images with embedded thumbnails found. Please select a different folder.";
+ document.querySelector("#messages").style.display = 'block';
+ document.querySelector("#file-selector").style.display = 'none';
+ document.querySelector("#cancel-link").style.display = 'none';
+ document.querySelector("#ok-button").style.display = 'block';
+ return;
+ }
+ document.querySelector(".progress").parentNode.removeChild( document.querySelector(".progress"));
+ var v73 = "s";
+ if (v58 + 1 == 1) {
+ v73 = "";
+ }
+ v9(".progress-text", "Successfully scanned ".concat(v51.v61.length, " file", v73, "."));
+ if (v51.v34 == 0) {
+ v9(".progress-text", "Zero thumbnails found from the successfully scanned ".concat(v51.v61.length, " file", v73, "."));
+ }
+ return;
+}
+
+
+function v9(v16, v68) {
+ document.querySelector(v16).textContent = v68;
+}
+
+function v2() {
+ var v73 = "s";
+ if (v51.v34 == 1) {
+ v73 = "";
+ }
+ v9(".found-clusters", "Found ".concat(v51.v34, ' embedded thumbnail', v73));
+}
+
+var v35 = document.querySelector("#progress-bar");
+
+function v3(v58) {
+ if (v58 + 1 == v51.v39) {
+ return;
+ }
+ v9(".progress-text", "Please wait... Reading ".concat(v58, ' from ', v51.v39, ' selected files.'));
+ var v52 = Math.floor(100 * (v58 + 1) / v51.v39);
+ if (v52 < 5) {
+ v52 = 5;
+ }
+ v35.style.width = "".concat(v52, "%");
+}
+function v56(v32, v21) {
+ var v67 = document.createElement("div");
+ v67.className = v32;
+ v21.appendChild(v67);
+ return v67;
+}
+
+var v31 = document.getElementById("clusters");
+
+function v6(v45) {
+ var v37 = v56("cluster", v31);
+ var v44 = v56("cluster-num", v37);
+ v44.textContent = v45;
+ var v20 = v56("cluster-content", v37);
+ v56("cluster-imgs", v20);
+ v56("cluster-paths", v20);
+}
+
+
+function v14(v45, v63, v71) {
+ var v53 = document.querySelectorAll( ".cluster-imgs" )[v45];
+ var v59 = v56("cluster-img-div", v53);
+ v71.classList.add("cluster-img");
+ v59.appendChild(v71);
+ var v36 = v56("image-size", v59);
+ v36.textContent = "".concat(v71.width, "×", v71.height);
+ var v18 = document.querySelectorAll( ".cluster-paths" )[v45];
+ var v43 = v56("img-path", v18);
+ var v70 = v51.v61[v51.v27[v63]];
+ v43.textContent = v70.webkitRelativePath;
+ v51.v7++;
+}
+
+function v38() {
+ var v69 = "";
+ var v54 = document.querySelectorAll(".img-path");
+ for (v75 = 0; v75 < v54.length; v75++) {
+ var v55 = v54[v75].textContent;
+ v69 = v69.concat(v55, v51.v23);
+ }
+ v69 = v69.slice(0, -1); document.querySelector(".textarea").value = v69;
+ document.querySelector(".textarea").classList.toggle("textareaon");
+}
+
+function v10() {
+ document.querySelector("#terms-of-service").style.display = 'none';
+ v51.v0 = setTimeout(function() {
+ document.querySelector("#messages").textContent = 'Please wait if you selected a very large number of images: it may take tens of seconds before the clustering starts.';
+ document.querySelector("#messages").style.display = 'block';
+ document.querySelector("#file-selector").style.display = 'none';
+ document.querySelector("#cancel-link").style.display = 'block';
+ }, v51.v1);
+}
+
+
+function v30(v61) {
+ v51.v7 = 0;
+ clearTimeout(v51.v0);
+ document.querySelector("#file-selector").style.display = 'none';
+ v51.v61 = v61;
+ v51.v48 = v61[0].webkitRelativePath.split("/")[0];
+ v51.v39 = v61.length;
+ var v58 = 0; var v63 = 0;
+ document.querySelector(".flex-container-select-files").style.display = 'none';
+ document.querySelector(".fixed-top").style.display = 'block';
+ document.querySelector(".view-list").addEventListener('click', (e) => {
+ v38();
+ });
+ document.querySelector(".fixed-white-2").style.display = 'block';
+ v2();
+ v22(v58, v63);
+}
+function v22(v58, v63) {
+ 
+ if (v58 >= v51.v39) {
+ v17(v58);
+ return;
+ }
+
+ if (v58 < 5 || v58 % 5 === 0) {
+ v3(v58);
+ }
+
+ if (!v51.v49 == v51.v61[v58].type || v51.v61[v58].size > v51.v5) {
+ v58++;
+ v22(v58, v63);
+ return;
+ }
+
+ v51.v46 = v63 + 1;
+
+ v25(v63, v58, function(v66) {
+ 
+ if (v66 == null) {
+ v58++;
+ v63++;
+ v22(v58, v63);
+ return;
+
+ } else {
+ 
+ var v71 = new Image();
+
+ v71.onload = function() {
+ 
+ v51.v11++;
+
+ v51.v27[v63] = v58;
+ v51.v40 = v58 + 1;
+
+ v51.v34++;
+ v6(v51.v34);
+ v14(v51.v34 - 1, v63, v71);
+ 
+ v58++;
+ v63++;
+ if (!v51.v8) {
+ v51.v8 = true;
+ }
+
+ URL.revokeObjectURL(v71.src); v2();
+ v22(v58, v63);
+ return;
+ };
+
+ v71.onerror = function() {
+ URL.revokeObjectURL(v71.src); v58++;
+ v63++;
+ v22(v58, v63);
+ return;
+ };
+
+ v71.src = URL.createObjectURL(v66);
+
+ return;
+ }
+ });
+}
+
+
+</script> 
+</body>
 </html>
-
